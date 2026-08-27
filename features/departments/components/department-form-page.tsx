@@ -42,10 +42,7 @@ import {
   fromDepartment,
   toDepartmentPayload,
 } from "@/features/departments/departments.transformers"
-import {
-  ACTIVE_STATUS_OPTIONS,
-  selectItems,
-} from "@/lib/api/enums"
+import { ACTIVE_STATUS_OPTIONS, selectItems } from "@/lib/api/enums"
 import { notifyInvalidForm } from "@/lib/ui/form-errors"
 import {
   FORM_INPUT_CLASS,
