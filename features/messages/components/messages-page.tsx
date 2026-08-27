@@ -1,0 +1,124 @@
+"use client"
+
+import * as React from "react"
+
+import { AdminShell } from "@/components/layout/admin-shell"
+import { PageHeader } from "@/components/layout/page-header"
+import { ConfirmDeleteDialog } from "@/components/ui/confirm-delete-dialog"
+import { MessageConversation } from "@/features/messages/components/message-conversation"
+import { MessageInbox } from "@/features/messages/components/message-inbox"
+import {
+  useDeleteMessage,
+  useMessage,
+  useMessages,
+  useSendReply,
+} from "@/features/messages/messages.hooks"
+import { toReplyPayload } from "@/features/messages/messages.transformers"
+import {
+  filterMessages,
+  selectMessage,
+  toMessageRow,
+  toMessageRows,
+  type MessageTab,
+} from "@/features/messages/messages.utils"
+import { useDebouncedValue } from "@/hooks/use-debounced-value"
+import { listQuery } from "@/lib/api/list-query"
+
+export function MessagesPage() {
+  const [selectedId, setSelectedId] = React.useState("")
+  const [tab, setTab] = React.useState<MessageTab>("Inbox")
+  const [search, setSearch] = React.useState("")
+  const debouncedSearch = useDebouncedValue(search)
+
+  // Search runs server-side (matches sender name and subject). The Unread /
+  // The Unread / Archived tabs stay client-side: the API returns no read or
+  // archive state to filter on.
+  const messagesQuery = useMessages(
+    listQuery({ page: 1, limit: 100, search: debouncedSearch }),
+  )
+  const deleteMessage = useDeleteMessage()
+  const sendReply = useSendReply()
+  const [replyText, setReplyText] = React.useState("")
+  const [deleteTargetId, setDeleteTargetId] = React.useState<string | null>(
+    null,
+  )
+
+  const messages = React.useMemo(
+    () => toMessageRows(messagesQuery.data?.data),
+    [messagesQuery.data],
+  )
+  const filteredMessages = React.useMemo(
+    () => filterMessages(messages, { tab }),
+    [messages, tab],
+  )
+  // Fall back to the list row so the pane has something to show while the
+  // detail request is in flight (and before a row has been picked).
+  const fallbackMessage = selectMessage(messages, selectedId)
+
+  // GET /messages/:id - the list is a summary; the detail endpoint is the
+  // source of truth for the message being read.
+  const messageDetail = useMessage(fallbackMessage.id || null)
+  const selectedMessage = messageDetail.data
+    ? toMessageRow(messageDetail.data)
+    : fallbackMessage
+
+  const handleSendReply = () => {
+    if (!selectedMessage.id) return
+
+    sendReply.mutate(toReplyPayload(selectedMessage, replyText), {
+      onSuccess: () => setReplyText(""),
+    })
+  }
+
+  const confirmDelete = () => {
+    if (!deleteTargetId) return
+
+    deleteMessage.mutate(deleteTargetId, {
+      onSettled: () => setDeleteTargetId(null),
+    })
+  }
+
+  return (
+    <AdminShell>
+      <div className="w-full space-y-8">
+        <PageHeader
+          title="Messages"
+          description="Inbox from the public contact form, email and SMS gateway."
+        />
+
+        <div className="grid items-start gap-6 lg:grid-cols-12">
+          <MessageInbox
+            messages={filteredMessages}
+            isLoading={messagesQuery.isLoading}
+            selectedId={selectedId}
+            onSelect={setSelectedId}
+            search={search}
+            onSearchChange={setSearch}
+            tab={tab}
+            onTabChange={setTab}
+          />
+
+          <MessageConversation
+            message={selectedMessage}
+            isEmpty={!messagesQuery.isLoading && messages.length === 0}
+            replyText={replyText}
+            onReplyTextChange={setReplyText}
+            onSendReply={handleSendReply}
+            isSendingReply={sendReply.isPending}
+            isLoading={messageDetail.isLoading}
+            onDelete={setDeleteTargetId}
+          />
+        </div>
+
+        <ConfirmDeleteDialog
+          open={Boolean(deleteTargetId)}
+          onOpenChange={(open) => !open && setDeleteTargetId(null)}
+          title="Delete message?"
+          description="This action will remove the conversation from your admin inbox."
+          onConfirm={confirmDelete}
+          disabled={deleteMessage.isPending}
+        />
+      </div>
+    </AdminShell>
+  )
+}
