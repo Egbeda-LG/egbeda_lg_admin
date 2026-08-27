@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Egbeda Admin
 
-## Getting Started
+Next.js admin console for managing Egbeda Local Government website content.
 
-First, run the development server:
+## Local setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+cp .env.example .env.local
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The app runs at [http://localhost:6000](http://localhost:6000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## API setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`NEXT_PUBLIC_API_BASE_URL` is the backend host. API requests use the documented
+`/api/v1` prefix and attach the admin bearer token automatically.
 
-## Learn More
+```env
+NEXT_PUBLIC_API_BASE_URL=https://egbeda-api-dev.jumpingcrab.com
+```
 
-To learn more about Next.js, take a look at the following resources:
+The API integration follows this flow:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```text
+component -> feature hook -> feature service -> typed endpoint -> Axios
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `providers/` owns the React Query client and `react-hot-toast` renderer.
+- `lib/api/` owns Axios, auth headers, error normalization, session storage,
+  interceptors, documented types, and endpoint functions.
+- `features/` owns each domain end to end - data access, derivations and UI.
+- `components/` owns cross-domain UI: `ui/` primitives and `layout/` shells.
+- `app/` only maps routes to a feature page component (plus a Suspense
+  boundary where the page reads search params).
 
-## Deploy on Vercel
+Every feature module follows the same layout:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```text
+features/<domain>/
+  <domain>.repository.ts    HTTP calls for the resource
+  <domain>.hooks.ts         React Query hooks
+  <domain>.form.ts          zod schema, defaults and option lists
+  <domain>.transformers.ts  form values <-> API payload
+  <domain>.utils.ts         row/view-model mapping, filtering, formatting
+  components/               the pages and pieces that render the domain
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Components stay presentational: no inline mapping, filtering or formatting -
+that work belongs in `<domain>.utils.ts` or `<domain>.transformers.ts`.
+
+Endpoint types and payloads are based on the [Egbeda LG Backend API Postman documentation](https://documenter.getpostman.com/view/19618541/2sBYAsxBfV).
+
+## Checks
+
+```bash
+pnpm typecheck
+pnpm lint
+pnpm build
+```
