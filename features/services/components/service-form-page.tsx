@@ -88,7 +88,7 @@ export function ServiceFormPage({ mode }: ServiceFormPageProps) {
           >
             <PageHeader
               title={mode === "edit" ? "Edit service" : "Add new service"}
-              description="Read-only preview of how this article appears on the public website."
+              description="Configure details, required documents, and processing timelines for this public service."
               actions={
                 <>
                   <Button
