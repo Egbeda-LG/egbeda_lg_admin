@@ -35,7 +35,6 @@ import {
 import {
   departmentFormDefaults,
   departmentFormSchema,
-  STAFF_STRENGTH_OPTIONS,
   type DepartmentFormValues,
 } from "@/features/departments/departments.form"
 import {
@@ -170,25 +169,17 @@ export function DepartmentFormPage() {
                       <FormLabel className={FORM_LABEL_CLASS}>
                         STAFF STRENGTH
                       </FormLabel>
-                      <Select
-                        items={selectItems(STAFF_STRENGTH_OPTIONS)}
-                        onValueChange={field.onChange}
-                        value={field.value}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className={FORM_SELECT_CLASS}>
-                            <SelectValue placeholder="Select number of staff" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {STAFF_STRENGTH_OPTIONS.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          inputMode="numeric"
+                          min={0}
+                          step={1}
+                          placeholder="Enter number of staff"
+                          {...field}
+                          className={FORM_INPUT_CLASS}
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
