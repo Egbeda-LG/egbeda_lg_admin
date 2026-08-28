@@ -83,11 +83,11 @@ export function AppSidebar() {
     <Sidebar className="border-r-0 bg-[#5c1424] text-white">
       {/* Sidebar Header: Official Seal & Branding */}
       <SidebarHeader className="h-20 flex-row items-center gap-3 bg-[#5c1424] px-6">
-        <div className="relative flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white shadow-md ring-2 ring-amber-400/50">
+        <div className="relative flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white p-0.5 shadow-md ring-2 ring-amber-400/50">
           <img
-            src="/egbeda_seal.jpg"
-            alt="Egbeda LG Seal"
-            className="size-full object-cover"
+            src="/egbeda_logo.png"
+            alt="Egbeda Local Government logo"
+            className="size-full object-contain"
           />
         </div>
         <div className="min-w-0">

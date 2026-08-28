@@ -20,13 +20,13 @@ export function AuthBrandingPanel() {
       <div className="pointer-events-none absolute -right-20 -bottom-20 size-96 rounded-full bg-amber-500/10 blur-3xl" />
 
       <div className="relative z-10 flex items-center gap-3">
-        <div className="relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white shadow-md ring-2 ring-amber-400/50">
+        <div className="relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white p-0.5 shadow-md ring-2 ring-amber-400/50">
           <Image
-            src="/egbeda_seal.jpg"
-            alt="Egbeda LG Seal"
+            src="/egbeda_logo.png"
+            alt="Egbeda Local Government logo"
             fill
             sizes="48px"
-            className="object-cover"
+            className="object-contain"
           />
         </div>
         <div>
