@@ -11,9 +11,7 @@ import {
   useDeleteMessage,
   useMessage,
   useMessages,
-  useSendReply,
 } from "@/features/messages/messages.hooks"
-import { toReplyPayload } from "@/features/messages/messages.transformers"
 import {
   filterMessages,
   selectMessage,
@@ -37,8 +35,6 @@ export function MessagesPage() {
     listQuery({ page: 1, limit: 100, search: debouncedSearch }),
   )
   const deleteMessage = useDeleteMessage()
-  const sendReply = useSendReply()
-  const [replyText, setReplyText] = React.useState("")
   const [deleteTargetId, setDeleteTargetId] = React.useState<string | null>(
     null,
   )
@@ -62,14 +58,6 @@ export function MessagesPage() {
     ? toMessageRow(messageDetail.data)
     : fallbackMessage
 
-  const handleSendReply = () => {
-    if (!selectedMessage.id) return
-
-    sendReply.mutate(toReplyPayload(selectedMessage, replyText), {
-      onSuccess: () => setReplyText(""),
-    })
-  }
-
   const confirmDelete = () => {
     if (!deleteTargetId) return
 
@@ -83,7 +71,7 @@ export function MessagesPage() {
       <div className="w-full space-y-8">
         <PageHeader
           title="Messages"
-          description="Inbox from the public contact form, email and SMS gateway."
+          description="Read-only inbox of enquiries submitted through the public website's contact form."
         />
 
         <div className="grid items-start gap-6 lg:grid-cols-12">
@@ -101,10 +89,6 @@ export function MessagesPage() {
           <MessageConversation
             message={selectedMessage}
             isEmpty={!messagesQuery.isLoading && messages.length === 0}
-            replyText={replyText}
-            onReplyTextChange={setReplyText}
-            onSendReply={handleSendReply}
-            isSendingReply={sendReply.isPending}
             isLoading={messageDetail.isLoading}
             onDelete={setDeleteTargetId}
           />

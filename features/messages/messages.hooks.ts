@@ -1,24 +1,51 @@
 "use client"
 
-import { createResourceHooks } from "@/lib/query/create-resource-hooks"
-import type {
-  ContactMessage,
-  ContactMessagePayload,
-  PaginatedResponse,
-} from "@/lib/api/types"
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query"
+import toast from "react-hot-toast"
+
 import { messagesRepository } from "@/features/messages/messages.repository"
+import type { ListQuery } from "@/lib/api/types"
 
-const hooks = createResourceHooks<
-  ContactMessage,
-  ContactMessagePayload,
-  PaginatedResponse<ContactMessage>
->("messages", messagesRepository)
+// Hand-rolled rather than createResourceHooks: that factory requires a full
+// CRUD repository, and the inbox has no create or update to expose.
+export const messageKeys = {
+  all: ["messages"] as const,
+  lists: () => ["messages", "list"] as const,
+  list: (query?: ListQuery) => ["messages", "list", query] as const,
+  details: () => ["messages", "detail"] as const,
+  detail: (id: string) => ["messages", "detail", id] as const,
+}
 
-export const messageKeys = hooks.keys
-export const useMessages = hooks.useList
-export const useMessage = hooks.useDetail
-export const useCreateMessage = () => hooks.useCreate("Message created")
-/** Replies are posted through the same create endpoint. */
-export const useSendReply = () => hooks.useCreate("Reply sent")
-export const useUpdateMessage = () => hooks.useUpdate("Message updated")
-export const useDeleteMessage = () => hooks.useRemove("Message deleted")
+export function useMessages(query?: ListQuery) {
+  return useQuery({
+    queryKey: messageKeys.list(query),
+    queryFn: () => messagesRepository.getAll(query),
+    placeholderData: keepPreviousData,
+  })
+}
+
+export function useMessage(id?: string | null) {
+  return useQuery({
+    queryKey: messageKeys.detail(id ?? ""),
+    queryFn: () => messagesRepository.getById(id as string),
+    enabled: Boolean(id),
+  })
+}
+
+export function useDeleteMessage() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => messagesRepository.remove(id),
+    onSuccess: async (_response, id) => {
+      queryClient.removeQueries({ queryKey: messageKeys.detail(id) })
+      await queryClient.invalidateQueries({ queryKey: messageKeys.lists() })
+      toast.success("Message deleted")
+    },
+  })
+}

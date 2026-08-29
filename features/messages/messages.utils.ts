@@ -73,4 +73,3 @@ export function filterMessages(
 export function selectMessage(rows: MessageRow[], selectedId: string) {
   return rows.find((row) => row.id === selectedId) ?? rows[0] ?? EMPTY_MESSAGE
 }
-

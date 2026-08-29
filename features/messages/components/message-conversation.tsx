@@ -1,29 +1,16 @@
 "use client"
 
-import * as React from "react"
-import {
-  RiAttachment2,
-  RiAttachmentLine,
-  RiDeleteBinLine,
-  RiReplyLine,
-  RiSendPlaneFill,
-} from "@remixicon/react"
+import { RiAttachment2, RiDeleteBinLine } from "@remixicon/react"
 
-import { Button } from "@/components/ui/button"
 import { EmptyState } from "@/components/ui/empty-state"
-import { Textarea } from "@/components/ui/textarea"
+import { Skeleton } from "@/components/ui/skeleton"
 import { MessageSelectIcon } from "@/components/icons/empty-states"
 import type { MessageRow } from "@/features/messages/messages.utils"
 
-import { Skeleton } from "@/components/ui/skeleton"
 type MessageConversationProps = {
   message: MessageRow
   isEmpty: boolean
   isLoading?: boolean
-  replyText: string
-  onReplyTextChange: (value: string) => void
-  onSendReply: () => void
-  isSendingReply?: boolean
   onDelete: (id: string) => void
 }
 
@@ -31,21 +18,8 @@ export function MessageConversation({
   message,
   isEmpty,
   isLoading,
-  replyText,
-  onReplyTextChange,
-  onSendReply,
-  isSendingReply,
   onDelete,
 }: MessageConversationProps) {
-  const replyRef = React.useRef<HTMLTextAreaElement>(null)
-
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault()
-    if (!replyText.trim()) return
-
-    onSendReply()
-  }
-
   return (
     <div className="bg-card space-y-6 rounded-2xl border p-6 shadow-sm lg:col-span-7">
       {isLoading ? (
@@ -66,7 +40,7 @@ export function MessageConversation({
         <EmptyState
           icon={<MessageSelectIcon />}
           title="Select a message"
-          description="Choose an incoming inquiry from the conversation list to read the full body and send a reply."
+          description="Choose an incoming inquiry from the conversation list to read the full message."
           className="border-0 py-16 shadow-none"
         />
       ) : (
@@ -93,13 +67,6 @@ export function MessageConversation({
                 className="hover:bg-muted hover:text-destructive rounded-lg p-2 transition-colors"
               >
                 <RiDeleteBinLine className="size-4" />
-              </button>
-              <button
-                onClick={() => replyRef.current?.focus()}
-                title="Reply"
-                className="hover:bg-muted rounded-lg p-2 transition-colors"
-              >
-                <RiReplyLine className="size-4" />
               </button>
             </div>
           </div>
@@ -141,38 +108,6 @@ export function MessageConversation({
               </div>
             )}
           </div>
-
-          <form onSubmit={handleSubmit} className="space-y-3 border-t pt-4">
-            <div className="bg-background space-y-3 rounded-2xl border p-3 focus-within:ring-1 focus-within:ring-[#701a2e]">
-              <Textarea
-                ref={replyRef}
-                placeholder="Write a reply..."
-                value={replyText}
-                onChange={(event) => onReplyTextChange(event.target.value)}
-                rows={4}
-                className="w-full resize-none border-0 bg-transparent p-0 text-xs shadow-none focus-visible:ring-0"
-              />
-
-              <div className="border-border/40 flex items-center justify-between border-t pt-2">
-                <button
-                  type="button"
-                  title="Attach file"
-                  className="text-muted-foreground hover:text-foreground p-1.5 transition-colors"
-                >
-                  <RiAttachmentLine className="size-4" />
-                </button>
-                <Button
-                  type="submit"
-                  size="sm"
-                  disabled={isSendingReply || !replyText.trim()}
-                  className="h-9 rounded-xl bg-[#701a2e] px-4 text-xs font-medium text-white shadow-sm hover:bg-[#571323]"
-                >
-                  <RiSendPlaneFill className="mr-1.5 size-3.5" />
-                  {isSendingReply ? "Sending..." : "Send reply"}
-                </Button>
-              </div>
-            </div>
-          </form>
         </>
       )}
     </div>
