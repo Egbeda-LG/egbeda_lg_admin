@@ -8,7 +8,6 @@ import { AdminShell } from "@/components/layout/admin-shell"
 import { PageHeader } from "@/components/layout/page-header"
 import { Button } from "@/components/ui/button"
 import { StatCard } from "@/components/ui/stat-card"
-import { SuccessModal } from "@/components/ui/success-modal"
 import { DashboardSkeleton } from "@/features/dashboard/components/dashboard-skeleton"
 import { LatestNewsCard } from "@/features/dashboard/components/latest-news-card"
 import { QuickActions } from "@/features/dashboard/components/quick-actions"
@@ -27,7 +26,6 @@ import {
 export function DashboardPage() {
   const router = useRouter()
   const { user, isAuthenticated, isLoading } = useAuth()
-  const [showSuccess, setShowSuccess] = React.useState(false)
   const dashboardQuery = useDashboardOverview(isAuthenticated)
 
   const stats = toDashboardStats(dashboardQuery.data)
@@ -64,7 +62,8 @@ export function DashboardPage() {
                   variant="outline"
                   size="sm"
                   className={SECONDARY_ACTION_CLASS}
-                  onClick={() => setShowSuccess(true)}
+                  disabled
+                  title="Report export is not available yet"
                 >
                   <RiDownloadLine className="text-muted-foreground mr-2 size-4" />
                   Export report
@@ -120,13 +119,6 @@ export function DashboardPage() {
           />
         </div>
       )}
-
-      <SuccessModal
-        open={showSuccess}
-        onOpenChange={setShowSuccess}
-        title="Report Exported!"
-        description="The executive summary report has been exported as PDF."
-      />
     </AdminShell>
   )
 }

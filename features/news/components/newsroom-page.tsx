@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import toast from "react-hot-toast"
 import { RiAddLine, RiDownloadLine, RiFilterLine } from "@remixicon/react"
 
 import { AdminShell } from "@/components/layout/admin-shell"
@@ -80,7 +79,8 @@ export function NewsroomPage() {
                 variant="outline"
                 size="sm"
                 className={SECONDARY_ACTION_CLASS}
-                onClick={() => toast.success("News report prepared")}
+                disabled
+                title="Report export is not available yet"
               >
                 <RiDownloadLine className="text-muted-foreground mr-2 size-4" />
                 Export report

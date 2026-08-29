@@ -79,36 +79,37 @@ export function LatestNewsCard({
       </div>
 
       <div className="space-y-4">
-        {isLoading ? (
-          Array.from({ length: 3 }).map((_, index) => (
-            <div key={index} className="flex items-center gap-3">
-              <Skeleton className="size-9 shrink-0 rounded-xl" />
-              <div className="min-w-0 flex-1 space-y-1.5">
-                <Skeleton className="h-4 w-3/4 rounded-md" />
-                <Skeleton className="h-3 w-32 rounded-md" />
-              </div>
-            </div>
-          ))
-        ) : (
-          rows.map((article) => {
-            const CategoryIcon = getCategoryIcon(article.category)
-            return (
-              <div key={article.id} className="flex items-center gap-3 text-xs">
-                <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#701a2e]/10 to-[#701a2e]/5 border border-[#701a2e]/15 text-[#701a2e] shadow-2xs">
-                  <CategoryIcon className="size-4.5" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-foreground text-xs leading-relaxed font-semibold hover:text-[#701a2e] transition-colors">
-                    {article.title}
-                  </p>
-                  <p className="text-muted-foreground mt-0.5 text-[11px] capitalize">
-                    {article.meta}
-                  </p>
+        {isLoading
+          ? Array.from({ length: 3 }).map((_, index) => (
+              <div key={index} className="flex items-center gap-3">
+                <Skeleton className="size-9 shrink-0 rounded-xl" />
+                <div className="min-w-0 flex-1 space-y-1.5">
+                  <Skeleton className="h-4 w-3/4 rounded-md" />
+                  <Skeleton className="h-3 w-32 rounded-md" />
                 </div>
               </div>
-            )
-          })
-        )}
+            ))
+          : rows.map((article) => {
+              const CategoryIcon = getCategoryIcon(article.category)
+              return (
+                <div
+                  key={article.id}
+                  className="flex items-center gap-3 text-xs"
+                >
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-xl border border-[#701a2e]/15 bg-gradient-to-br from-[#701a2e]/10 to-[#701a2e]/5 text-[#701a2e] shadow-2xs">
+                    <CategoryIcon className="size-4.5" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-foreground text-xs leading-relaxed font-semibold transition-colors hover:text-[#701a2e]">
+                      {article.title}
+                    </p>
+                    <p className="text-muted-foreground mt-0.5 text-[11px] capitalize">
+                      {article.meta}
+                    </p>
+                  </div>
+                </div>
+              )
+            })}
 
         {!isLoading && rows.length === 0 && (
           <EmptyState

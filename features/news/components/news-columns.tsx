@@ -2,11 +2,7 @@
 
 import Link from "next/link"
 import type { ColumnDef } from "@tanstack/react-table"
-import {
-  RiDeleteBinLine,
-  RiEditLine,
-  RiEyeLine,
-} from "@remixicon/react"
+import { RiDeleteBinLine, RiEditLine, RiEyeLine } from "@remixicon/react"
 
 import { StatusBadge } from "@/components/ui/status-badge"
 import type { NewsRow } from "@/features/news/news.utils"

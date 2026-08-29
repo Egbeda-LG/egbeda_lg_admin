@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import toast from "react-hot-toast"
 import { RiAddLine, RiDownloadLine } from "@remixicon/react"
 
 import { AdminShell } from "@/components/layout/admin-shell"
@@ -14,7 +13,6 @@ import { CardGridSkeleton } from "@/components/ui/loading-skeletons"
 import { PaginationFooter } from "@/components/ui/pagination-footer"
 import { NulgeEmptyIcon } from "@/components/icons/empty-states"
 import { NulgeOfficialCard } from "@/features/nulge/components/nulge-official-card"
-import { NULGE_EXPORT_UNAVAILABLE_MESSAGE } from "@/features/nulge/nulge.form"
 import {
   useDeleteNulgeMember,
   useNulgeList,
@@ -59,7 +57,8 @@ export function NulgePage() {
                 variant="outline"
                 size="sm"
                 className={SECONDARY_ACTION_CLASS}
-                onClick={() => toast.error(NULGE_EXPORT_UNAVAILABLE_MESSAGE)}
+                disabled
+                title="Report export is not available yet"
               >
                 <RiDownloadLine className="text-muted-foreground mr-2 size-4" />
                 Export report

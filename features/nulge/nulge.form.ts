@@ -25,7 +25,3 @@ export const nulgeFormDefaults: NulgeFormValues = {
   twitter: "",
   instagram: "",
 }
-
-/** The API documents no export route for the NULGE roster. */
-export const NULGE_EXPORT_UNAVAILABLE_MESSAGE =
-  "No NULGE export endpoint is available in the API documentation"

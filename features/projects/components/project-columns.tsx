@@ -29,7 +29,9 @@ export function projectColumns({
       accessorKey: "ward",
       header: "WARD",
       cell: ({ row }) => (
-        <span className="text-muted-foreground text-xs">{row.original.ward}</span>
+        <span className="text-muted-foreground text-xs">
+          {row.original.ward}
+        </span>
       ),
     },
     {
