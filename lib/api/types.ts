@@ -220,19 +220,34 @@ export type NulgeItem = {
 export type NulgePayload = Omit<NulgeItem, "_id">
 
 /**
- * A submission from the website's contact form. The backend does not enforce
- * the body it stores, so every field but the id can come back missing -
- * toMessageRow is written to expect that.
+ * What the public actually submitted. The contact form does not require these,
+ * so any of them can arrive empty or absent.
  */
-export type ContactMessage = {
-  _id: string
+export type ContactMessageMeta = {
   first_name?: string
   last_name?: string
   email?: string
-  phone?: string
+  phone_number?: string
   subject?: string
   message?: string
-  photo_url?: string
+}
+
+/**
+ * A notification envelope from GET /messages, carrying a contact-form
+ * submission as type "user_feedback". The top-level `message` is a summary
+ * line for a notification feed ("<name> sent feedback: <subject>"), NOT the
+ * body the sender wrote - that lives in `meta.message`.
+ */
+export type ContactMessage = {
+  _id: string
+  type: string
+  title: string
+  /** Summary line, not the submitted body. Use meta.message for that. */
+  message: string
+  is_read: boolean
+  meta?: ContactMessageMeta
+  createdAt: string
+  updatedAt: string
 }
 
 export type OrganizationDetails = {

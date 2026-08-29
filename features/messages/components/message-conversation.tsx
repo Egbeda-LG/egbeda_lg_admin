@@ -1,6 +1,6 @@
 "use client"
 
-import { RiAttachment2, RiDeleteBinLine } from "@remixicon/react"
+import { RiDeleteBinLine } from "@remixicon/react"
 
 import { EmptyState } from "@/components/ui/empty-state"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -88,25 +88,6 @@ export function MessageConversation({
                 — {message.sender}
               </p>
             </div>
-
-            {message.attachment && (
-              <div className="border-border/50 space-y-2 border-t pt-4">
-                <span className="text-muted-foreground text-[10px] font-bold tracking-wider uppercase">
-                  ATTACHMENTS
-                </span>
-                <div>
-                  <span className="bg-muted/30 text-foreground hover:bg-muted/60 inline-flex cursor-pointer items-center gap-2 rounded-xl border px-3.5 py-2 text-xs font-medium transition-colors">
-                    <RiAttachment2 className="text-muted-foreground size-4" />
-                    <span>
-                      {message.attachment.name} ·{" "}
-                      <span className="text-muted-foreground">
-                        {message.attachment.size}
-                      </span>
-                    </span>
-                  </span>
-                </div>
-              </div>
-            )}
           </div>
         </>
       )}

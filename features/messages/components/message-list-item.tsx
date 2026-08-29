@@ -46,11 +46,8 @@ export function MessageListItem({
           {message.subject}
         </p>
         <div className="flex items-center gap-2 pt-0.5">
-          <span className="bg-muted/60 text-muted-foreground inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-medium">
-            {message.channel}
-            {message.unread && (
-              <span className="size-1.5 rounded-full bg-rose-500" />
-            )}
+          <span className="bg-muted/60 text-muted-foreground inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-medium">
+            {message.date}
           </span>
         </div>
       </div>

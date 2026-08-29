@@ -1,6 +1,8 @@
+import { format, isValid, parseISO } from "date-fns"
+
 import type { ContactMessage } from "@/lib/api/types"
 
-export const MESSAGE_TABS = ["Inbox", "Unread", "Archived"] as const
+export const MESSAGE_TABS = ["Inbox", "Unread"] as const
 
 export type MessageTab = (typeof MESSAGE_TABS)[number]
 
@@ -17,7 +19,6 @@ export type MessageRow = {
   body: string
   channel: string
   unread: boolean
-  attachment?: { name: string; size: string }
 }
 
 export const EMPTY_MESSAGE: MessageRow = {
@@ -40,27 +41,30 @@ function text(value?: string | null) {
 }
 
 export function toMessageRow(item: ContactMessage): MessageRow {
-  const firstName = text(item.first_name)
-  const lastName = text(item.last_name)
+  // The submission lives under `meta`; the envelope's own `message` is just a
+  // summary line ("<name> sent feedback: <subject>").
+  const meta = item.meta ?? {}
+  const firstName = text(meta.first_name)
+  const lastName = text(meta.last_name)
   const sender = `${firstName} ${lastName}`.trim()
   const initials = `${firstName[0] ?? ""}${lastName[0] ?? ""}`.toUpperCase()
+  const submitted = item.createdAt ? parseISO(item.createdAt) : null
+  const submittedAt = submitted && isValid(submitted) ? submitted : null
 
   return {
     id: item._id,
-    // Senders come from a public form, so a record can arrive with no name at
-    // all. Fall back rather than rendering "undefined undefined" or a blank
-    // avatar.
+    // The form does not require a name, so a submission can genuinely have
+    // none. Fall back rather than rendering a blank row.
     sender: sender || "Unknown sender",
     initials: initials || "?",
-    email: text(item.email) || "—",
-    phone: text(item.phone) || "—",
-    // The API returns no timestamps or read state on messages.
-    time: "—",
-    date: "—",
-    subject: text(item.subject) || "(no subject)",
-    body: text(item.message),
+    email: text(meta.email) || "—",
+    phone: text(meta.phone_number) || "—",
+    date: submittedAt ? format(submittedAt, "d MMM yyyy") : "—",
+    time: submittedAt ? format(submittedAt, "HH:mm") : "—",
+    subject: text(meta.subject) || "(no subject)",
+    body: text(meta.message) || "(no message)",
     channel: "Web",
-    unread: false,
+    unread: !item.is_read,
   }
 }
 
@@ -69,16 +73,14 @@ export function toMessageRows(items: ContactMessage[] = []): MessageRow[] {
 }
 
 /**
- * Only the tabs are applied here - text search is handled server-side by
- * GET /messages?search=. Unread / Archived have no backing fields on the API,
- * so they filter against values that are always false.
+ * Only the tab is applied here - text search is handled server-side by
+ * GET /messages?search=.
  */
 export function filterMessages(
   rows: MessageRow[],
   { tab }: { tab: MessageTab },
 ) {
   if (tab === "Unread") return rows.filter((row) => row.unread)
-  if (tab === "Archived") return []
 
   return rows
 }
