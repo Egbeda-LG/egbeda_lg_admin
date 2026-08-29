@@ -18,7 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { SuccessModal } from "@/components/ui/success-modal"
+import { ForgotPasswordDialog } from "@/features/auth/components/forgot-password-dialog"
 import { AuthLayout } from "@/features/auth/components/auth-layout"
 import { AuthLoadingScreen } from "@/features/auth/components/auth-loading-screen"
 import {
@@ -26,7 +26,7 @@ import {
   loginFormSchema,
   type LoginFormValues,
 } from "@/features/auth/auth.form"
-import { AUTH_ERRORS } from "@/features/auth/auth.utils"
+import { AUTH_ERRORS, ICT_SUPPORT_EMAIL } from "@/features/auth/auth.utils"
 import { useAuth } from "@/lib/auth/auth-context"
 import { notifyInvalidForm } from "@/lib/ui/form-errors"
 
@@ -116,7 +116,7 @@ export function LoginPage() {
             <p className="text-muted-foreground pt-2 text-center text-xs">
               Need help?{" "}
               <a
-                href="mailto:ict@egbedalg.gov.ng"
+                href={`mailto:${ICT_SUPPORT_EMAIL}`}
                 className="font-semibold text-[#701a2e] hover:underline dark:text-rose-400"
               >
                 Contact ICT support
@@ -238,11 +238,9 @@ export function LoginPage() {
         </Form>
       </AuthLayout>
 
-      <SuccessModal
+      <ForgotPasswordDialog
         open={showForgotModal}
         onOpenChange={setShowForgotModal}
-        title="Password Reset Request"
-        description="Please contact your IT administrator at ict@egbedalg.gov.ng to reset your account password."
       />
     </>
   )
