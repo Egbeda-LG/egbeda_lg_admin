@@ -219,18 +219,21 @@ export type NulgeItem = {
 
 export type NulgePayload = Omit<NulgeItem, "_id">
 
+/**
+ * A submission from the website's contact form. The backend does not enforce
+ * the body it stores, so every field but the id can come back missing -
+ * toMessageRow is written to expect that.
+ */
 export type ContactMessage = {
   _id: string
-  first_name: string
-  last_name: string
-  email: string
-  phone: string
-  subject: string
-  message: string
+  first_name?: string
+  last_name?: string
+  email?: string
+  phone?: string
+  subject?: string
+  message?: string
   photo_url?: string
 }
-
-export type ContactMessagePayload = Omit<ContactMessage, "_id">
 
 export type OrganizationDetails = {
   official_name: string

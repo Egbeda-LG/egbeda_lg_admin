@@ -34,18 +34,31 @@ export const EMPTY_MESSAGE: MessageRow = {
   unread: false,
 }
 
+/** Anything the API left off the record reads as an empty string. */
+function text(value?: string | null) {
+  return typeof value === "string" ? value.trim() : ""
+}
+
 export function toMessageRow(item: ContactMessage): MessageRow {
+  const firstName = text(item.first_name)
+  const lastName = text(item.last_name)
+  const sender = `${firstName} ${lastName}`.trim()
+  const initials = `${firstName[0] ?? ""}${lastName[0] ?? ""}`.toUpperCase()
+
   return {
     id: item._id,
-    sender: `${item.first_name} ${item.last_name}`.trim(),
-    initials: `${item.first_name[0] ?? ""}${item.last_name[0] ?? ""}`,
-    email: item.email,
-    phone: item.phone,
+    // Senders come from a public form, so a record can arrive with no name at
+    // all. Fall back rather than rendering "undefined undefined" or a blank
+    // avatar.
+    sender: sender || "Unknown sender",
+    initials: initials || "?",
+    email: text(item.email) || "—",
+    phone: text(item.phone) || "—",
     // The API returns no timestamps or read state on messages.
     time: "—",
     date: "—",
-    subject: item.subject,
-    body: item.message,
+    subject: text(item.subject) || "(no subject)",
+    body: text(item.message),
     channel: "Web",
     unread: false,
   }
