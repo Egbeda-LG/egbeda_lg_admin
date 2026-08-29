@@ -35,11 +35,11 @@ export function serviceColumns({
       ),
     },
     {
-      accessorKey: "fee",
-      header: "FEE",
+      accessorKey: "price",
+      header: "PRICE",
       cell: ({ row }) => (
         <span className="text-foreground text-xs font-semibold">
-          {row.original.fee}
+          {row.original.price}
         </span>
       ),
     },

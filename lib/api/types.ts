@@ -144,6 +144,12 @@ export type ServiceItem = {
   name: string
   short_description: string
   department: string
+  /**
+   * The service fee. Sent as a plain numeric string ("500"); tolerated as a
+   * number, null or absent on the way back, since records created before the
+   * field existed carry no price at all.
+   */
+  price?: string | number | null
   timeline: string
   description: string
   eligibility: string[]

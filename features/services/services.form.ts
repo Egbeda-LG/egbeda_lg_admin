@@ -6,7 +6,10 @@ import { isValidDateRange } from "@/components/ui/date-range-picker"
 const requiredList = (message: string) =>
   z
     .array(z.string())
-    .refine((entries) => entries.some((entry) => entry.trim().length > 0), message)
+    .refine(
+      (entries) => entries.some((entry) => entry.trim().length > 0),
+      message,
+    )
 
 export const serviceFormSchema = z.object({
   name: z.string().min(2, "Service name is required"),

@@ -1,4 +1,5 @@
 import { compactStringList } from "@/components/ui/string-list-field"
+import { priceToAmount } from "@/features/services/services.utils"
 import type { ServiceFormValues } from "@/features/services/services.form"
 import type { ServiceItem, ServicePayload } from "@/lib/api/types"
 
@@ -7,6 +8,7 @@ export function toServicePayload(values: ServiceFormValues): ServicePayload {
     name: values.name,
     short_description: values.shortDescription ?? "",
     department: values.department,
+    price: values.amount,
     timeline: values.timeline ?? "",
     description: values.description ?? "",
     eligibility: compactStringList(values.eligibility),
@@ -22,8 +24,7 @@ export function fromService(item: ServiceItem): ServiceFormValues {
     name: item.name,
     shortDescription: item.short_description,
     department: item.department,
-    // The API has no fee field on services yet.
-    amount: "",
+    amount: priceToAmount(item.price),
     timeline: item.timeline,
     description: item.description,
     eligibility: item.eligibility ?? [],

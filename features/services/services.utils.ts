@@ -1,3 +1,7 @@
+import { format } from "date-fns"
+
+import { formatAmount } from "@/components/ui/currency-input"
+import { parseDateRangeValue } from "@/components/ui/date-range-picker"
 import {
   PUBLISH_STATUS_OPTIONS,
   optionLabel,
@@ -10,7 +14,7 @@ export type ServiceRow = {
   id: string
   title: string
   description: string
-  fee: string
+  price: string
   department: string
   timeline: string
   status: string
@@ -23,15 +27,52 @@ export const SERVICE_FILTER_OPTIONS: SelectOption[] = [
   ...PUBLISH_STATUS_OPTIONS,
 ]
 
+/**
+ * The stored price as the plain numeric string the form edits. Anything the
+ * API cannot express as a number (absent, null, "") becomes an empty string,
+ * which the amount field treats as "not set yet".
+ */
+export function priceToAmount(price?: string | number | null) {
+  if (price === null || price === undefined) return ""
+
+  const value = String(price).trim()
+
+  return value && Number.isFinite(Number(value)) ? value : ""
+}
+
+/** "500" -> "₦500.00"; an unset price reads as a dash rather than "₦0". */
+export function formatServicePrice(price?: string | number | null) {
+  const amount = priceToAmount(price)
+  if (!amount) return "\u2014"
+
+  return `\u20a6${formatAmount(Number(amount).toFixed(2))}`
+}
+
+/**
+ * "2026-08-05 to 2026-09-07" -> "5 Aug - 7 Sep 2026", dropping the repeated
+ * year when both ends share one. `timeline` is free text on the API, so
+ * anything that is not a serialised range is shown as stored.
+ */
+export function formatTimeline(value?: string | null) {
+  const raw = value?.trim() ?? ""
+  if (!raw) return "\u2014"
+
+  const range = parseDateRangeValue(raw)
+  if (!range?.from || !range.to) return raw
+
+  const sameYear = range.from.getFullYear() === range.to.getFullYear()
+
+  return `${format(range.from, sameYear ? "d MMM" : "d MMM yyyy")} \u2013 ${format(range.to, "d MMM yyyy")}`
+}
+
 export function toServiceRow(item: ServiceItem): ServiceRow {
   return {
     id: item._id,
     title: item.name,
     description: item.short_description,
-    // The API has no fee field on services yet.
-    fee: "—",
+    price: formatServicePrice(item.price),
     department: item.department,
-    timeline: item.timeline,
+    timeline: formatTimeline(item.timeline),
     status: item.status,
     statusLabel: optionLabel(PUBLISH_STATUS_OPTIONS, item.status),
     isPublished: item.status?.toLowerCase() === "published",

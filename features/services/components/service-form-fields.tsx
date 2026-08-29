@@ -159,7 +159,7 @@ export function ServiceFormFields({ form }: ServiceFormFieldsProps) {
             name="amount"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className={FORM_LABEL_CLASS}>AMOUNT</FormLabel>
+                <FormLabel className={FORM_LABEL_CLASS}>PRICE</FormLabel>
                 <FormControl>
                   <CurrencyInput
                     placeholder="0.00"
