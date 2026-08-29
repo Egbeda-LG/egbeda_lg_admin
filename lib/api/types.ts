@@ -316,6 +316,8 @@ export type ContactAndSupport = {
 export type OrganizationSettings = {
   organization: OrganizationDetails
   chairman_info: ChairmanInfo
+  /** Same shape as the chairman; omitted until a vice chairman is recorded. */
+  vice_chairman_info?: ChairmanInfo
   contact_and_support: ContactAndSupport
   social_media: SocialMediaLink[]
 }
@@ -328,6 +330,7 @@ export type OrganizationSettings = {
 export type OrganizationSettingsResponse = {
   organization?: Partial<OrganizationDetails>
   chairman_info?: Partial<ChairmanInfo>
+  vice_chairman_info?: Partial<ChairmanInfo>
   contact_and_support?: Partial<ContactAndSupport>
   social_media?: SocialMediaLink[]
 }

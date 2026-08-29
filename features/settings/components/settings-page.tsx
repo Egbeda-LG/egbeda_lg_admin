@@ -19,6 +19,7 @@ import {
   ContactPanel,
   OrganizationPanel,
   SocialPanel,
+  ViceChairmanPanel,
 } from "@/features/settings/components/settings-tab-panels"
 import {
   organizationSettingsFormDefaults,
@@ -47,6 +48,9 @@ export function SettingsPage() {
   const [chairmanImages, setChairmanImages] = React.useState<
     ChairmanImageDraft[]
   >([])
+  const [viceChairmanImages, setViceChairmanImages] = React.useState<
+    ChairmanImageDraft[]
+  >([])
   // Tracks which fetched document the drafts were seeded from, so a refetch
   // does not discard photos the user has just added.
   const [seededFrom, setSeededFrom] = React.useState<unknown>(null)
@@ -67,39 +71,55 @@ export function SettingsPage() {
   if (settings.data && seededFrom !== settings.data) {
     setSeededFrom(settings.data)
     setChairmanImages(toImageDrafts(settings.data.chairman_info?.images))
+    setViceChairmanImages(
+      toImageDrafts(settings.data.vice_chairman_info?.images),
+    )
   }
 
   const isSaving = updateSettings.isPending || uploadFile.isPending
 
+  /**
+   * Uploads any newly picked photos, keeping each one's placement flags. The
+   * whole array is sent, so images already stored are passed through as-is.
+   */
+  const resolveImages = (drafts: ChairmanImageDraft[]) =>
+    Promise.all(
+      drafts.map(async (image) => {
+        const photoUrl = image.file
+          ? await uploadFile.mutateAsync({
+              file: image.file,
+              folder: "settings",
+            })
+          : (image.photoUrl ?? "")
+
+        return {
+          photo_url: photoUrl,
+          is_in_homepage: image.isInHomepage,
+          is_in_government: image.isInGovernment,
+          is_in_about: image.isInAbout,
+        }
+      }),
+    )
+
   const onSubmit = async (values: OrganizationSettingsFormValues) => {
-    // Upload any newly added photos, keeping each one's placement flags, then
-    // send the whole `chairman_info.images` array.
     let images: PlacementImage[]
+    let viceImages: PlacementImage[]
 
     try {
-      images = await Promise.all(
-        chairmanImages.map(async (image) => {
-          const photoUrl = image.file
-            ? await uploadFile.mutateAsync({
-                file: image.file,
-                folder: "settings",
-              })
-            : (image.photoUrl ?? "")
-
-          return {
-            photo_url: photoUrl,
-            is_in_homepage: image.isInHomepage,
-            is_in_government: image.isInGovernment,
-            is_in_about: image.isInAbout,
-          }
-        }),
-      )
+      ;[images, viceImages] = await Promise.all([
+        resolveImages(chairmanImages),
+        resolveImages(viceChairmanImages),
+      ])
     } catch {
       return
     }
 
     updateSettings.mutate(
-      toOrganizationSettings(values, images.filter((image) => image.photo_url)),
+      toOrganizationSettings(
+        values,
+        images.filter((image) => image.photo_url),
+        viceImages.filter((image) => image.photo_url),
+      ),
     )
   }
 
@@ -126,8 +146,17 @@ export function SettingsPage() {
               {activeTab === "Chairman Information" && (
                 <ChairmanPanel
                   control={form.control}
-                  chairmanImages={chairmanImages}
-                  onChairmanImagesChange={setChairmanImages}
+                  images={chairmanImages}
+                  onImagesChange={setChairmanImages}
+                  isSaving={isSaving}
+                />
+              )}
+
+              {activeTab === "Vice Chairman" && (
+                <ViceChairmanPanel
+                  control={form.control}
+                  images={viceChairmanImages}
+                  onImagesChange={setViceChairmanImages}
                   isSaving={isSaving}
                 />
               )}

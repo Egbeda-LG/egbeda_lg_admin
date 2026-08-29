@@ -6,6 +6,7 @@ import {
   RiMailLine,
   RiMapPinLine,
   RiUser3Line,
+  RiUserStarLine,
 } from "@remixicon/react"
 import type { Control } from "react-hook-form"
 
@@ -27,6 +28,10 @@ import {
   LOCATION_FIELDS,
   ORGANIZATION_FIELDS,
   SOCIAL_FIELDS,
+  VICE_CHAIRMAN_FIELDS,
+  VICE_CHAIRMAN_SOCIAL_FIELDS,
+  VICE_CHAIRMAN_TEXT_AREAS,
+  type SettingsField,
   type OrganizationSettingsFormValues,
 } from "@/features/settings/settings.form"
 
@@ -51,43 +56,91 @@ export function OrganizationPanel({ control }: PanelProps) {
   )
 }
 
-type ChairmanPanelProps = PanelProps & {
-  chairmanImages: ChairmanImageDraft[]
-  onChairmanImagesChange: (images: ChairmanImageDraft[]) => void
+type OfficialPanelProps = PanelProps & {
+  images: ChairmanImageDraft[]
+  onImagesChange: (images: ChairmanImageDraft[]) => void
   isSaving?: boolean
 }
 
-export function ChairmanPanel({
+type OfficialInfoPanelProps = OfficialPanelProps & {
+  icon: typeof RiUser3Line
+  title: string
+  description: string
+  socialLabel: string
+  fields: SettingsField[]
+  textAreas: SettingsField[]
+  socialFields: SettingsField[]
+}
+
+/** Shared by the two offices, which carry an identical section on the API. */
+function OfficialInfoPanel({
   control,
-  chairmanImages,
-  onChairmanImagesChange,
+  images,
+  onImagesChange,
   isSaving,
-}: ChairmanPanelProps) {
+  icon,
+  title,
+  description,
+  socialLabel,
+  fields,
+  textAreas,
+  socialFields,
+}: OfficialInfoPanelProps) {
   return (
     <div className="space-y-6">
       <SettingsSectionHeader
-        icon={RiUser3Line}
-        title="Chairman Information"
-        description="Displayed on the public site as chairman details"
+        icon={icon}
+        title={title}
+        description={description}
       />
       <ChairmanImagesField
-        images={chairmanImages}
-        onChange={onChairmanImagesChange}
+        images={images}
+        onChange={onImagesChange}
         disabled={isSaving}
       />
 
-      <SettingsTextFields control={control} fields={CHAIRMAN_FIELDS} />
-      {CHAIRMAN_TEXT_AREAS.map((field) => (
+      <SettingsTextFields control={control} fields={fields} />
+      {textAreas.map((field) => (
         <SettingsTextArea key={field.name} control={control} field={field} />
       ))}
 
       <div className="space-y-4 pt-2">
         <p className="text-muted-foreground text-xs font-bold tracking-wider uppercase">
-          Chairman social media (optional)
+          {socialLabel}
         </p>
-        <SettingsUrlFields control={control} fields={CHAIRMAN_SOCIAL_FIELDS} />
+        <SettingsUrlFields control={control} fields={socialFields} />
       </div>
     </div>
+  )
+}
+
+export function ChairmanPanel(props: OfficialPanelProps) {
+  return (
+    <OfficialInfoPanel
+      {...props}
+      icon={RiUser3Line}
+      title="Chairman Information"
+      description="Displayed on the public site as chairman details"
+      socialLabel="Chairman social media (optional)"
+      fields={CHAIRMAN_FIELDS}
+      textAreas={CHAIRMAN_TEXT_AREAS}
+      socialFields={CHAIRMAN_SOCIAL_FIELDS}
+    />
+  )
+}
+
+export function ViceChairmanPanel(props: OfficialPanelProps) {
+  return (
+    <OfficialInfoPanel
+      {...props}
+      icon={RiUserStarLine}
+      title="Vice Chairman Information"
+      description="Optional - leave the name blank while the office is vacant"
+      socialLabel="Vice chairman social media (optional)"
+      fields={VICE_CHAIRMAN_FIELDS}
+      textAreas={VICE_CHAIRMAN_TEXT_AREAS}
+      socialFields={VICE_CHAIRMAN_SOCIAL_FIELDS}
+    />
   )
 }
 

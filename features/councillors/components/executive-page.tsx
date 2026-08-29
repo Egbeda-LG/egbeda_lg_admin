@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import toast from "react-hot-toast"
 import { RiAddLine, RiDownloadLine } from "@remixicon/react"
 
 import { AdminShell } from "@/components/layout/admin-shell"
@@ -26,10 +25,11 @@ import {
   type CouncillorRow,
 } from "@/features/councillors/councillors.utils"
 import { ExecutiveOfficialCard } from "@/features/management/components/executive-official-card"
-import { useManagement } from "@/features/management/management.hooks"
-import { toManagementRows } from "@/features/management/management.utils"
 import { useOrganizationSettings } from "@/features/settings/settings.hooks"
-import { toChairmanProfile } from "@/features/settings/settings.utils"
+import {
+  toChairmanProfile,
+  toViceChairmanProfile,
+} from "@/features/settings/settings.utils"
 import { useWards } from "@/features/wards/wards.hooks"
 import {
   PRIMARY_ACTION_CLASS,
@@ -40,7 +40,6 @@ export function ExecutivePage() {
   const router = useRouter()
   const councillorsQuery = useCouncillors({ page: 1, limit: 100 })
   const deleteCouncillor = useDeleteCouncillor()
-  const managementQuery = useManagement({ page: 1, limit: 2 })
   const settingsQuery = useOrganizationSettings()
   const wardsQuery = useWards()
 
@@ -51,14 +50,15 @@ export function ExecutivePage() {
     () => toCouncillorRows(councillorsQuery.data?.data, wardsQuery.data),
     [councillorsQuery.data, wardsQuery.data],
   )
+  // Both offices are held by one person and edited in organization settings
+  // rather than as management records, so they are read from there. Appointed
+  // management officials have their own page.
   const officials = React.useMemo(
-    () => toManagementRows(managementQuery.data?.data),
-    [managementQuery.data],
-  )
-  // The chairman is not a management record - the office is held by one person
-  // and edited in organization settings, so it is read from there.
-  const chairman = React.useMemo(
-    () => toChairmanProfile(settingsQuery.data),
+    () =>
+      [
+        toChairmanProfile(settingsQuery.data),
+        toViceChairmanProfile(settingsQuery.data),
+      ].filter((official) => official !== null),
     [settingsQuery.data],
   )
 
@@ -87,9 +87,8 @@ export function ExecutivePage() {
                 variant="outline"
                 size="sm"
                 className={SECONDARY_ACTION_CLASS}
-                onClick={() =>
-                  toast.success("Executive council report prepared")
-                }
+                disabled
+                title="Report export is not available yet"
               >
                 <RiDownloadLine className="text-muted-foreground mr-2 size-4" />
                 Export report
@@ -107,42 +106,27 @@ export function ExecutivePage() {
         />
 
         <div className="grid max-w-4xl gap-6 sm:grid-cols-2">
-          {(managementQuery.isLoading || settingsQuery.isLoading) && (
-            <CardGridSkeleton withMedia count={2} />
-          )}
-
-          {chairman && (
-            <ExecutiveOfficialCard
-              name={chairman.name}
-              officeLabel={chairman.office}
-              image={chairman.image}
-              onEdit={() => router.push("/settings")}
-              editLabel="Edit in settings"
-            />
-          )}
+          {settingsQuery.isLoading && <CardGridSkeleton withMedia count={2} />}
 
           {officials.map((official) => (
             <ExecutiveOfficialCard
-              key={official.id}
+              key={official.office}
               name={official.name}
-              officeLabel={official.officeLabel}
+              officeLabel={official.office}
               image={official.image}
-              statusLabel={official.statusLabel}
-              onEdit={() => router.push(`/management/edit?id=${official.id}`)}
+              onEdit={() => router.push("/settings")}
+              editLabel="Edit in settings"
             />
           ))}
 
-          {!managementQuery.isLoading &&
-            !settingsQuery.isLoading &&
-            !chairman &&
-            officials.length === 0 && (
-              <EmptyState
-                icon={<ExecutiveEmptyIcon />}
-                title="No executive officials"
-                description="Executive and appointed cabinet members will appear here."
-                className="sm:col-span-2"
-              />
-            )}
+          {!settingsQuery.isLoading && officials.length === 0 && (
+            <EmptyState
+              icon={<ExecutiveEmptyIcon />}
+              title="No executive officials"
+              description="The chairman and vice chairman appear here once they are recorded in organization settings."
+              className="sm:col-span-2"
+            />
+          )}
         </div>
 
         {councillorsQuery.isLoading ? (

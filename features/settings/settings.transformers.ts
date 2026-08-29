@@ -37,10 +37,23 @@ function chairmanLinks(values: OrganizationSettingsFormValues) {
   ])
 }
 
+/** The vice chairman's personal accounts, kept apart from the chairman's. */
+function viceChairmanLinks(values: OrganizationSettingsFormValues) {
+  return toLinks([
+    ["tiktok", values.viceChairmanTiktokUrl],
+    ["facebook", values.viceChairmanFacebookUrl],
+    ["twitter", values.viceChairmanTwitterUrl],
+    ["instagram", values.viceChairmanInstagramUrl],
+  ])
+}
+
 export function toOrganizationSettings(
   values: OrganizationSettingsFormValues,
   chairmanImages: PlacementImage[] = [],
+  viceChairmanImages: PlacementImage[] = [],
 ): OrganizationSettings {
+  const viceChairmanName = values.viceChairmanName?.trim() ?? ""
+
   return {
     organization: {
       official_name: values.officialName,
@@ -68,6 +81,24 @@ export function toOrganizationSettings(
       social_media: chairmanLinks(values),
       images: chairmanImages,
     },
+    // Only sent once a vice chairman is named, so saving the other tabs on a
+    // document that has none does not write an empty section over it.
+    ...(viceChairmanName
+      ? {
+          vice_chairman_info: {
+            official_name: viceChairmanName,
+            short_name: values.viceShortName ?? "",
+            years_in_service: numberValue(values.viceYearsInService),
+            projects_delivered: numberValue(values.viceProjectsDelivered),
+            town_halls_hosted: numberValue(values.viceTownHallsHosted),
+            no_of_staffs: numberValue(values.viceChairmanStaffsCount),
+            biography: values.viceChairmanBio ?? "",
+            message: values.viceChairmanMessage ?? "",
+            social_media: viceChairmanLinks(values),
+            images: viceChairmanImages,
+          },
+        }
+      : {}),
     contact_and_support: {
       official_email: values.emailAddress ?? "",
       support_email: values.supportEmail ?? "",
@@ -94,6 +125,7 @@ export function fromOrganizationSettings(
   // time, so every section and field must be treated as optional here.
   const org = settings.organization ?? {}
   const chairman = settings.chairman_info ?? {}
+  const vice = settings.vice_chairman_info ?? {}
   const contact = settings.contact_and_support ?? {}
   const byPlatform = (list?: SocialMediaLink[]) =>
     Object.fromEntries(
@@ -102,6 +134,7 @@ export function fromOrganizationSettings(
 
   const social = byPlatform(settings.social_media)
   const chairmanSocial = byPlatform(chairman.social_media)
+  const viceSocial = byPlatform(vice.social_media)
   return {
     officialName: str(org.official_name),
     localGovName: str(org.lg_name),
@@ -123,6 +156,18 @@ export function fromOrganizationSettings(
     chairmanStaffsCount: str(chairman.no_of_staffs),
     chairmanBio: str(chairman.biography),
     chairmanMessage: str(chairman.message),
+    viceChairmanName: str(vice.official_name),
+    viceShortName: str(vice.short_name),
+    viceYearsInService: str(vice.years_in_service),
+    viceProjectsDelivered: str(vice.projects_delivered),
+    viceTownHallsHosted: str(vice.town_halls_hosted),
+    viceChairmanStaffsCount: str(vice.no_of_staffs),
+    viceChairmanBio: str(vice.biography),
+    viceChairmanMessage: str(vice.message),
+    viceChairmanTiktokUrl: viceSocial.tiktok ?? "",
+    viceChairmanFacebookUrl: viceSocial.facebook ?? "",
+    viceChairmanTwitterUrl: viceSocial.twitter ?? "",
+    viceChairmanInstagramUrl: viceSocial.instagram ?? "",
     emailAddress: str(contact.official_email),
     supportEmail: str(contact.support_email),
     emergencyLine1: str(contact.emergency_line_1),

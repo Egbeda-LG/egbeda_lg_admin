@@ -9,12 +9,24 @@ const numeric = (label: string) =>
     .min(1, `${label} is required`)
     .regex(/^\d+(\.\d+)?$/, `${label} must be a number`)
 
+/**
+ * The vice chairman's details are optional - the office can be vacant, and the
+ * settings document predates the section entirely. Blank stays valid; anything
+ * filled in still has to be a number.
+ */
+const optionalNumeric = (label: string) =>
+  z
+    .string()
+    .refine(
+      (value) => value.trim() === "" || /^\d+(\.\d+)?$/.test(value.trim()),
+      `${label} must be a number`,
+    )
+
 const coordinate = (label: string) =>
   z
     .string()
     .min(1, `${label} is required`)
     .regex(/^-?\d+(\.\d+)?$/, `${label} must be a number`)
-
 
 export const organizationSettingsFormSchema = z.object({
   // Organization
@@ -44,6 +56,19 @@ export const organizationSettingsFormSchema = z.object({
   chairmanFacebookUrl: optionalUrl("Facebook"),
   chairmanTwitterUrl: optionalUrl("Twitter"),
   chairmanInstagramUrl: optionalUrl("Instagram"),
+  // Vice chairman information - every field optional, see optionalNumeric.
+  viceChairmanName: z.string(),
+  viceShortName: z.string(),
+  viceYearsInService: optionalNumeric("Years in service"),
+  viceProjectsDelivered: optionalNumeric("Projects delivered"),
+  viceTownHallsHosted: optionalNumeric("Town halls hosted"),
+  viceChairmanStaffsCount: optionalNumeric("Staffs count"),
+  viceChairmanBio: z.string(),
+  viceChairmanMessage: z.string(),
+  viceChairmanTiktokUrl: optionalUrl("TikTok"),
+  viceChairmanFacebookUrl: optionalUrl("Facebook"),
+  viceChairmanTwitterUrl: optionalUrl("Twitter"),
+  viceChairmanInstagramUrl: optionalUrl("Instagram"),
   // Contact & support
   emailAddress: z
     .string()
@@ -78,9 +103,9 @@ export type OrganizationSettingsFormValues = z.infer<
 
 /** Keys whose value is a string - everything the text/URL inputs can bind to. */
 type StringFieldName = {
-  [K in keyof OrganizationSettingsFormValues]: OrganizationSettingsFormValues[K] extends string
-    ? K
-    : never
+  [
+    K in keyof OrganizationSettingsFormValues
+  ]: OrganizationSettingsFormValues[K] extends string ? K : never
 }[keyof OrganizationSettingsFormValues]
 
 export type SettingsField = {
@@ -126,6 +151,27 @@ export const CHAIRMAN_SOCIAL_FIELDS: SettingsField[] = [
 export const CHAIRMAN_TEXT_AREAS: SettingsField[] = [
   { name: "chairmanBio", label: "BIOGRAPHY OF THE CHAIRMAN" },
   { name: "chairmanMessage", label: "EXECUTIVE CHAIRMAN MESSAGE" },
+]
+
+export const VICE_CHAIRMAN_FIELDS: SettingsField[] = [
+  { name: "viceChairmanName", label: "VICE CHAIRMAN NAME" },
+  { name: "viceShortName", label: "SHORT NAME" },
+  { name: "viceYearsInService", label: "NUMBER OF YEARS IN SERVICE" },
+  { name: "viceProjectsDelivered", label: "NUMBER OF PROJECTS DELIVERED" },
+  { name: "viceTownHallsHosted", label: "NUMBER OF TOWN HALLS HOSTED" },
+  { name: "viceChairmanStaffsCount", label: "NUMBER OF STAFFS" },
+]
+
+export const VICE_CHAIRMAN_SOCIAL_FIELDS: SettingsField[] = [
+  { name: "viceChairmanTiktokUrl", label: "TIKTOK" },
+  { name: "viceChairmanFacebookUrl", label: "FACEBOOK" },
+  { name: "viceChairmanTwitterUrl", label: "TWITTER" },
+  { name: "viceChairmanInstagramUrl", label: "INSTAGRAM" },
+]
+
+export const VICE_CHAIRMAN_TEXT_AREAS: SettingsField[] = [
+  { name: "viceChairmanBio", label: "BIOGRAPHY OF THE VICE CHAIRMAN" },
+  { name: "viceChairmanMessage", label: "VICE CHAIRMAN MESSAGE" },
 ]
 
 export const CONTACT_FIELDS: SettingsField[] = [

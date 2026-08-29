@@ -102,7 +102,9 @@ export function ChairmanImagesField({
   }
 
   const update = (index: number, patch: Partial<ChairmanImageDraft>) =>
-    onChange(images.map((image, i) => (i === index ? { ...image, ...patch } : image)))
+    onChange(
+      images.map((image, i) => (i === index ? { ...image, ...patch } : image)),
+    )
 
   const removeAt = (index: number) =>
     onChange(images.filter((_, i) => i !== index))
@@ -130,7 +132,7 @@ export function ChairmanImagesField({
             key={image.key}
             className="border-input bg-background space-y-3 rounded-xl border p-3"
           >
-            <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted">
+            <div className="bg-muted relative aspect-video w-full overflow-hidden rounded-lg">
               {previews[index] ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
