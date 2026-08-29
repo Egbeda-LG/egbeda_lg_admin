@@ -15,6 +15,26 @@ export const AUTH_ERRORS = {
 export const PROFILE_UPDATE_UNAVAILABLE_MESSAGE =
   "The API documentation does not provide a profile-update endpoint"
 
+/** "Sikiru Sanda" -> "SS"; falls back to a single letter, then to "?". */
+export function profileInitials(name?: string) {
+  const words = (name ?? "").trim().split(/\s+/).filter(Boolean)
+  const initials = words
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join("")
+
+  return initials.toUpperCase() || "?"
+}
+
+/** "super_admin" -> "Super Admin". */
+export function roleLabel(role?: string) {
+  return (role ?? "")
+    .split(/[_\s]+/)
+    .filter(Boolean)
+    .map((word) => word[0].toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ")
+}
+
 export function errorMessage(error: unknown, fallback: string) {
   return error instanceof Error ? error.message : fallback
 }

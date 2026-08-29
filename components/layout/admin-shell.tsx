@@ -3,6 +3,7 @@
 import * as React from "react"
 import { RiNotification3Line, RiSearchLine } from "@remixicon/react"
 
+import { profileInitials, roleLabel } from "@/features/auth/auth.utils"
 import { useAuth } from "@/lib/auth/auth-context"
 import { AppSidebar } from "@/components/layout/app-sidebar"
 import { Input } from "@/components/ui/input"
@@ -47,14 +48,14 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
               <div className="flex items-center gap-2.5 border-l pl-2">
                 <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#701a2e] text-xs font-bold text-white">
-                  SO
+                  {profileInitials(user?.name)}
                 </div>
                 <div className="hidden text-left sm:block">
                   <p className="text-foreground text-xs leading-none font-bold">
-                    {user?.name ?? "Segun Oladapo"}
+                    {user?.name ?? "Administrator"}
                   </p>
                   <p className="text-muted-foreground mt-1 text-[10px] leading-none">
-                    Super Admin
+                    {roleLabel(user?.role)}
                   </p>
                 </div>
               </div>

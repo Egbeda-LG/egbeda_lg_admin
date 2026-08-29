@@ -27,7 +27,12 @@ import {
 } from "@/features/auth/auth.form"
 import { useAdminProfile } from "@/features/auth/auth.hooks"
 import { fromAdminProfile } from "@/features/auth/auth.transformers"
-import { PROFILE_UPDATE_UNAVAILABLE_MESSAGE } from "@/features/auth/auth.utils"
+import {
+  PROFILE_UPDATE_UNAVAILABLE_MESSAGE,
+  profileInitials,
+  roleLabel,
+} from "@/features/auth/auth.utils"
+import { useAuth } from "@/lib/auth/auth-context"
 import { notifyInvalidForm } from "@/lib/ui/form-errors"
 
 const LABEL_CLASS =
@@ -45,7 +50,10 @@ const PROFILE_FIELDS = [
 
 export function ProfilePage() {
   const profile = useAdminProfile()
-  const [avatarPreview, setAvatarPreview] = React.useState<string | null>(null)
+  const { user } = useAuth()
+  // GET /auth/me is the fuller record, but the stored session already carries
+  // name, email and role - so the card stays populated if that request fails.
+  const admin = profile.data ?? user
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = React.useState(false)
 
   const form = useForm<ProfileFormValues>({
@@ -70,11 +78,13 @@ export function ProfilePage() {
         />
 
         <ProfileIdentityCard
-          avatarUrl={avatarPreview ?? profile.data?.photo_url}
-          initials="AD"
-          name="Segun Oladapo"
-          subtitle="Super Admin · segunoladapo@admin.org"
-          onAvatarChange={(file) => setAvatarPreview(URL.createObjectURL(file))}
+          initials={profileInitials(admin?.name)}
+          name={admin?.name ?? "Administrator"}
+          subtitle={
+            [roleLabel(admin?.role), admin?.email]
+              .filter(Boolean)
+              .join(" · ") || "Signed-in administrator"
+          }
         />
 
         <Form {...form}>

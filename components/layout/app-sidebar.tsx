@@ -19,6 +19,7 @@ import {
   RiUserSharedLine,
 } from "@remixicon/react"
 
+import { profileInitials } from "@/features/auth/auth.utils"
 import { useAuth } from "@/lib/auth/auth-context"
 import {
   Sidebar,
@@ -252,14 +253,14 @@ export function AppSidebar() {
         <div className="flex items-center justify-between rounded-xl border border-white/10 bg-white/10 p-3 backdrop-blur-md">
           <div className="flex min-w-0 items-center gap-2.5">
             <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white font-serif text-xs font-bold text-[#5c1424]">
-              AD
+              {profileInitials(user?.name)}
             </div>
             <div className="min-w-0">
               <p className="truncate text-xs leading-tight font-semibold text-white">
-                {user?.name ?? "Segun Oladapo"}
+                {user?.name ?? "Administrator"}
               </p>
               <p className="truncate text-[10px] leading-tight text-rose-200/70">
-                {user?.email ?? "segunoladapo@admin.org"}
+                {user?.email ?? ""}
               </p>
             </div>
           </div>
