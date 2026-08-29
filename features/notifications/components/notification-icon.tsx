@@ -2,8 +2,9 @@
 
 import {
   RiArticleLine,
+  RiBuilding4Line,
+  RiChatQuoteLine,
   RiCompass3Line,
-  RiHammerLine,
   RiMessage3Line,
   RiUser3Line,
 } from "@remixicon/react"
@@ -13,37 +14,44 @@ import { cn } from "@/lib/utils"
 
 const ICONS: Record<
   NotificationIconType,
-  { Icon: typeof RiMessage3Line; className: string }
+  { Icon: React.ElementType; className: string }
 > = {
   message: {
     Icon: RiMessage3Line,
-    className: "border border-sky-100 bg-sky-50 text-sky-600",
+    className:
+      "border border-[#701a2e]/15 bg-gradient-to-br from-[#701a2e]/10 to-[#701a2e]/5 text-[#701a2e]",
   },
   feedback: {
-    Icon: RiMessage3Line,
-    className: "border border-sky-100 bg-sky-50 text-sky-600",
+    Icon: RiChatQuoteLine,
+    className:
+      "border border-[#701a2e]/15 bg-gradient-to-br from-[#701a2e]/10 to-[#701a2e]/5 text-[#701a2e]",
   },
   article: {
     Icon: RiArticleLine,
-    className: "border border-rose-100 bg-rose-50 text-rose-600",
+    className:
+      "border border-[#701a2e]/15 bg-gradient-to-br from-[#701a2e]/10 to-[#701a2e]/5 text-[#701a2e]",
   },
   project: {
-    Icon: RiHammerLine,
-    className: "border border-emerald-100 bg-emerald-50 text-emerald-600",
+    Icon: RiBuilding4Line,
+    className:
+      "border border-[#701a2e]/15 bg-gradient-to-br from-[#701a2e]/10 to-[#701a2e]/5 text-[#701a2e]",
   },
   profile: {
     Icon: RiUser3Line,
-    className: "border border-slate-200 bg-slate-100 text-slate-600",
+    className:
+      "border border-[#701a2e]/15 bg-gradient-to-br from-[#701a2e]/10 to-[#701a2e]/5 text-[#701a2e]",
   },
   landmark: {
     Icon: RiCompass3Line,
-    className: "border border-amber-100 bg-amber-50 text-amber-600",
+    className:
+      "border border-amber-200/80 bg-amber-50/90 text-amber-800 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-400",
   },
 }
 
 const FALLBACK = {
   Icon: RiMessage3Line,
-  className: "bg-muted text-muted-foreground",
+  className:
+    "border border-[#701a2e]/15 bg-gradient-to-br from-[#701a2e]/10 to-[#701a2e]/5 text-[#701a2e]",
 }
 
 export function NotificationIcon({ type }: { type: NotificationIconType }) {
@@ -52,7 +60,7 @@ export function NotificationIcon({ type }: { type: NotificationIconType }) {
   return (
     <div
       className={cn(
-        "flex size-10 shrink-0 items-center justify-center rounded-xl",
+        "flex size-10 shrink-0 items-center justify-center rounded-xl shadow-2xs transition-colors",
         className,
       )}
     >

@@ -5,17 +5,20 @@ type PaginationFooterProps = {
   page?: number
   totalPages?: number
   className?: string
+  /** Omit to keep the controls inert, as the not-yet-paginated pages do. */
+  onPageChange?: (page: number) => void
+  isBusy?: boolean
 }
 
-/**
- * Static pagination footer. The API pagination is not wired up yet, so the
- * controls stay disabled and only report the current page.
- */
 export function PaginationFooter({
   page = 1,
   totalPages = 1,
   className,
+  onPageChange,
+  isBusy,
 }: PaginationFooterProps) {
+  const canGoBack = Boolean(onPageChange) && page > 1
+  const canGoForward = Boolean(onPageChange) && page < totalPages
   return (
     <div
       className={cn(
@@ -30,7 +33,8 @@ export function PaginationFooter({
         <Button
           variant="outline"
           size="sm"
-          disabled
+          disabled={!canGoBack || isBusy}
+          onClick={() => onPageChange?.(page - 1)}
           className="h-8 px-3 text-xs shadow-none"
         >
           Prev
@@ -41,7 +45,8 @@ export function PaginationFooter({
         <Button
           variant="outline"
           size="sm"
-          disabled
+          disabled={!canGoForward || isBusy}
+          onClick={() => onPageChange?.(page + 1)}
           className="h-8 px-3 text-xs shadow-none"
         >
           Next

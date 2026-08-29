@@ -11,6 +11,7 @@ type NotificationRowProps = {
   onOpen: (notification: NotificationRowData) => void
   onMarkRead: (id: string) => void
   onDelete: (id: string) => void
+  isBusy?: boolean
 }
 
 export function NotificationRow({
@@ -18,6 +19,7 @@ export function NotificationRow({
   onOpen,
   onMarkRead,
   onDelete,
+  isBusy,
 }: NotificationRowProps) {
   return (
     <div className="hover:bg-muted/10 flex flex-col justify-between gap-4 rounded-xl px-2 py-4 transition-colors first:pt-0 last:pb-0 sm:flex-row sm:items-center">
@@ -29,7 +31,7 @@ export function NotificationRow({
               {notification.title}
             </h3>
             {!notification.read && (
-              <span className="size-2 shrink-0 rounded-full bg-rose-600" />
+              <span className="size-2 shrink-0 rounded-full bg-[#701a2e]" />
             )}
           </div>
           <p className="text-muted-foreground truncate text-xs leading-relaxed sm:whitespace-normal">
@@ -56,7 +58,8 @@ export function NotificationRow({
           <button
             type="button"
             onClick={() => onMarkRead(notification.id)}
-            className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors"
+            disabled={isBusy}
+            className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors disabled:opacity-50"
           >
             Mark read
           </button>
@@ -65,8 +68,9 @@ export function NotificationRow({
         <button
           type="button"
           onClick={() => onDelete(notification.id)}
+          disabled={isBusy}
           title="Delete notification"
-          className="p-1 text-rose-500 transition-colors hover:text-rose-700"
+          className="p-1 text-rose-500 transition-colors hover:text-rose-700 disabled:opacity-50"
         >
           <RiDeleteBinLine className="size-4" />
         </button>

@@ -28,11 +28,17 @@ export function MessagesPage() {
   const [search, setSearch] = React.useState("")
   const debouncedSearch = useDebouncedValue(search)
 
-  // Search runs server-side (matches sender name and subject). The Unread /
-  // The Unread / Archived tabs stay client-side: the API returns no read or
-  // archive state to filter on.
+  // GET /messages is an alias of the notifications feed, so it also carries
+  // entity activity ("project_updated", ...) that has no sender or subject.
+  // type=user_feedback narrows it to actual contact-form submissions.
+  // Search runs server-side; the Unread tab filters client-side on is_read.
   const messagesQuery = useMessages(
-    listQuery({ page: 1, limit: 100, search: debouncedSearch }),
+    listQuery({
+      page: 1,
+      limit: 100,
+      search: debouncedSearch,
+      type: "user_feedback",
+    }),
   )
   const deleteMessage = useDeleteMessage()
   const [deleteTargetId, setDeleteTargetId] = React.useState<string | null>(

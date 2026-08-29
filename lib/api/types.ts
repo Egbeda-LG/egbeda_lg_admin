@@ -18,6 +18,7 @@ export type ListQuery = PaginationQuery & {
   office?: string
   email?: string
   subject?: string
+  type?: string
 }
 
 export type PaginationMeta = {
@@ -220,35 +221,50 @@ export type NulgeItem = {
 export type NulgePayload = Omit<NulgeItem, "_id">
 
 /**
- * What the public actually submitted. The contact form does not require these,
- * so any of them can arrive empty or absent.
+ * Payload attached to a notification. Which keys are present depends on the
+ * notification's `type`: a "user_feedback" record carries the contact-form
+ * submission, while entity activity ("project_updated", "management_updated",
+ * ...) carries only the entity it refers to. Nothing here is guaranteed.
  */
-export type ContactMessageMeta = {
+export type NotificationMeta = {
   first_name?: string
   last_name?: string
   email?: string
   phone_number?: string
   subject?: string
   message?: string
+  attachment_url?: string
+  entity_id?: string
+  entity_name?: string
 }
 
 /**
- * A notification envelope from GET /messages, carrying a contact-form
- * submission as type "user_feedback". The top-level `message` is a summary
- * line for a notification feed ("<name> sent feedback: <subject>"), NOT the
- * body the sender wrote - that lives in `meta.message`.
+ * An entry in the notifications feed. `message` is a pre-rendered summary line
+ * ("Amina Saliu sent feedback: Road maintenance request"), NOT the body a
+ * sender wrote - that is meta.message on a "user_feedback" record.
  */
-export type ContactMessage = {
+export type NotificationItem = {
   _id: string
   type: string
   title: string
-  /** Summary line, not the submitted body. Use meta.message for that. */
   message: string
   is_read: boolean
-  meta?: ContactMessageMeta
+  meta?: NotificationMeta
   createdAt: string
   updatedAt: string
 }
+
+export type MarkAllReadResponse = {
+  message: string
+  modified_count: number
+}
+
+/**
+ * GET /messages returns the notifications feed on this backend - the same
+ * records, byte for byte, not the flat shape the API docs still show. The
+ * inbox narrows it to type=user_feedback.
+ */
+export type ContactMessage = NotificationItem
 
 export type OrganizationDetails = {
   official_name: string
