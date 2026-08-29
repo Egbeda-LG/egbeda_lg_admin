@@ -18,7 +18,8 @@ export type ManagementRow = {
   isActive: boolean
 }
 
-const PLACEHOLDER_PHOTO = "/placeholder-user.jpg"
+/** No stock portrait ships with the app; the cards draw a fallback icon. */
+const PLACEHOLDER_PHOTO = ""
 
 export function toManagementRow(item: ManagementItem): ManagementRow {
   return {

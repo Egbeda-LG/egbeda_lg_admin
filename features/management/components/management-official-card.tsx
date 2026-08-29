@@ -1,6 +1,6 @@
 "use client"
 
-import { RiDeleteBinLine, RiEditLine } from "@remixicon/react"
+import { RiDeleteBinLine, RiEditLine, RiUser3Line } from "@remixicon/react"
 
 import type { ManagementRow } from "@/features/management/management.utils"
 
@@ -19,12 +19,18 @@ export function ManagementOfficialCard({
     <div className="bg-card flex flex-col justify-between space-y-4 rounded-2xl border p-5 shadow-sm transition-all hover:border-[#701a2e]/30">
       <div className="space-y-4">
         <div className="bg-muted relative h-56 w-full overflow-hidden rounded-xl border">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={official.image}
-            alt={official.name}
-            className="size-full object-cover object-top"
-          />
+          {official.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={official.image}
+              alt={official.name}
+              className="size-full object-cover object-top"
+            />
+          ) : (
+            <div className="text-muted-foreground/40 flex size-full items-center justify-center">
+              <RiUser3Line className="size-12" />
+            </div>
+          )}
           <div className="absolute top-3 left-3">
             <span className="inline-flex items-center rounded-full bg-emerald-500/90 px-3 py-0.5 text-[11px] font-semibold text-white backdrop-blur-md">
               {official.statusLabel}

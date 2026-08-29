@@ -28,6 +28,8 @@ import {
 import { ExecutiveOfficialCard } from "@/features/management/components/executive-official-card"
 import { useManagement } from "@/features/management/management.hooks"
 import { toManagementRows } from "@/features/management/management.utils"
+import { useOrganizationSettings } from "@/features/settings/settings.hooks"
+import { toChairmanProfile } from "@/features/settings/settings.utils"
 import { useWards } from "@/features/wards/wards.hooks"
 import {
   PRIMARY_ACTION_CLASS,
@@ -39,6 +41,7 @@ export function ExecutivePage() {
   const councillorsQuery = useCouncillors({ page: 1, limit: 100 })
   const deleteCouncillor = useDeleteCouncillor()
   const managementQuery = useManagement({ page: 1, limit: 2 })
+  const settingsQuery = useOrganizationSettings()
   const wardsQuery = useWards()
 
   const [councilorToDelete, setCouncilorToDelete] =
@@ -51,6 +54,12 @@ export function ExecutivePage() {
   const officials = React.useMemo(
     () => toManagementRows(managementQuery.data?.data),
     [managementQuery.data],
+  )
+  // The chairman is not a management record - the office is held by one person
+  // and edited in organization settings, so it is read from there.
+  const chairman = React.useMemo(
+    () => toChairmanProfile(settingsQuery.data),
+    [settingsQuery.data],
   )
 
   const confirmDelete = () => {
@@ -98,26 +107,42 @@ export function ExecutivePage() {
         />
 
         <div className="grid max-w-4xl gap-6 sm:grid-cols-2">
-          {managementQuery.isLoading && (
+          {(managementQuery.isLoading || settingsQuery.isLoading) && (
             <CardGridSkeleton withMedia count={2} />
+          )}
+
+          {chairman && (
+            <ExecutiveOfficialCard
+              name={chairman.name}
+              officeLabel={chairman.office}
+              image={chairman.image}
+              onEdit={() => router.push("/settings")}
+              editLabel="Edit in settings"
+            />
           )}
 
           {officials.map((official) => (
             <ExecutiveOfficialCard
               key={official.id}
-              official={official}
-              onEdit={(id) => router.push(`/management/edit?id=${id}`)}
+              name={official.name}
+              officeLabel={official.officeLabel}
+              image={official.image}
+              statusLabel={official.statusLabel}
+              onEdit={() => router.push(`/management/edit?id=${official.id}`)}
             />
           ))}
 
-          {!managementQuery.isLoading && officials.length === 0 && (
-            <EmptyState
-              icon={<ExecutiveEmptyIcon />}
-              title="No executive officials"
-              description="Executive and appointed cabinet members will appear here."
-              className="sm:col-span-2"
-            />
-          )}
+          {!managementQuery.isLoading &&
+            !settingsQuery.isLoading &&
+            !chairman &&
+            officials.length === 0 && (
+              <EmptyState
+                icon={<ExecutiveEmptyIcon />}
+                title="No executive officials"
+                description="Executive and appointed cabinet members will appear here."
+                className="sm:col-span-2"
+              />
+            )}
         </div>
 
         {councillorsQuery.isLoading ? (
