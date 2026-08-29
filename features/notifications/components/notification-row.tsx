@@ -31,7 +31,7 @@ export function NotificationRow({
               {notification.title}
             </h3>
             {!notification.read && (
-              <span className="size-2 shrink-0 rounded-full bg-[#701a2e]" />
+              <span className="size-2 shrink-0 rounded-full bg-rose-600" />
             )}
           </div>
           <p className="text-muted-foreground truncate text-xs leading-relaxed sm:whitespace-normal">

@@ -32,8 +32,6 @@ export function DepartmentsPage() {
 
   const [search, setSearch] = React.useState("")
   const debouncedSearch = useDebouncedValue(search)
-
-  // Filtering is applied server-side by the list endpoint.
   const departmentsQuery = useDepartments(
     listQuery({ page: 1, limit: 100, search: debouncedSearch }),
   )
