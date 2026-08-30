@@ -312,10 +312,10 @@ export type OrganizationDetails = {
 export type ChairmanInfo = {
   official_name: string
   short_name: string
-  years_in_service: number
-  projects_delivered: number
-  town_halls_hosted: number
-  no_of_staffs: number
+  years_in_service: string
+  projects_delivered: string
+  town_halls_hosted: string
+  no_of_staffs: string
   biography: string
   message: string
   social_media: SocialMediaLink[]

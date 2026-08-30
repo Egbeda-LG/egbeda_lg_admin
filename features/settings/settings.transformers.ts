@@ -9,6 +9,8 @@ import type {
 const numberValue = (value?: string) =>
   Number(value?.replace(/[^\d.-]/g, "")) || 0
 
+const stringValue = (value?: string) => value?.trim() ?? ""
+
 function toLinks(
   entries: [platform: string, url: string | undefined][],
 ): SocialMediaLink[] {
@@ -72,10 +74,10 @@ export function toOrganizationSettings(
     chairman_info: {
       official_name: values.chairmanName,
       short_name: values.shortName,
-      years_in_service: numberValue(values.yearsInService),
-      projects_delivered: numberValue(values.projectsDelivered),
-      town_halls_hosted: numberValue(values.townHallsHosted),
-      no_of_staffs: numberValue(values.chairmanStaffsCount),
+      years_in_service: stringValue(values.yearsInService),
+      projects_delivered: stringValue(values.projectsDelivered),
+      town_halls_hosted: stringValue(values.townHallsHosted),
+      no_of_staffs: stringValue(values.chairmanStaffsCount),
       biography: values.chairmanBio ?? "",
       message: values.chairmanMessage ?? "",
       social_media: chairmanLinks(values),
@@ -88,10 +90,10 @@ export function toOrganizationSettings(
           vice_chairman_info: {
             official_name: viceChairmanName,
             short_name: values.viceShortName ?? "",
-            years_in_service: numberValue(values.viceYearsInService),
-            projects_delivered: numberValue(values.viceProjectsDelivered),
-            town_halls_hosted: numberValue(values.viceTownHallsHosted),
-            no_of_staffs: numberValue(values.viceChairmanStaffsCount),
+            years_in_service: stringValue(values.viceYearsInService),
+            projects_delivered: stringValue(values.viceProjectsDelivered),
+            town_halls_hosted: stringValue(values.viceTownHallsHosted),
+            no_of_staffs: stringValue(values.viceChairmanStaffsCount),
             biography: values.viceChairmanBio ?? "",
             message: values.viceChairmanMessage ?? "",
             social_media: viceChairmanLinks(values),

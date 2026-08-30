@@ -34,9 +34,9 @@ export type ChairmanProfile = {
   image: string
   biography: string
   message: string
-  yearsInService: number
-  projectsDelivered: number
-  townHallsHosted: number
+  yearsInService: string
+  projectsDelivered: string
+  townHallsHosted: string
 }
 
 /**
@@ -70,9 +70,9 @@ function toOfficialProfile(
     image: chairmanPortrait(info.images),
     biography: info.biography ?? "",
     message: info.message ?? "",
-    yearsInService: info.years_in_service ?? 0,
-    projectsDelivered: info.projects_delivered ?? 0,
-    townHallsHosted: info.town_halls_hosted ?? 0,
+    yearsInService: info.years_in_service ?? "",
+    projectsDelivered: info.projects_delivered ?? "",
+    townHallsHosted: info.town_halls_hosted ?? "",
   }
 }
 
