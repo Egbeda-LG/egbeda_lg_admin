@@ -9,19 +9,6 @@ const numeric = (label: string) =>
     .min(1, `${label} is required`)
     .regex(/^\d+(\.\d+)?$/, `${label} must be a number`)
 
-/**
- * The vice chairman's details are optional - the office can be vacant, and the
- * settings document predates the section entirely. Blank stays valid; anything
- * filled in still has to be a number.
- */
-const optionalNumeric = (label: string) =>
-  z
-    .string()
-    .refine(
-      (value) => value.trim() === "" || /^\d+(\.\d+)?$/.test(value.trim()),
-      `${label} must be a number`,
-    )
-
 const coordinate = (label: string) =>
   z
     .string()
@@ -45,10 +32,10 @@ export const organizationSettingsFormSchema = z.object({
   // Chairman information
   chairmanName: z.string().min(2, "Chairman name required"),
   shortName: z.string().min(2, "Short name required"),
-  yearsInService: numeric("Years in service"),
-  projectsDelivered: numeric("Projects delivered"),
-  townHallsHosted: numeric("Town halls hosted"),
-  chairmanStaffsCount: numeric("Staffs count"),
+  yearsInService: z.string().min(1, "Years in service is required"),
+  projectsDelivered: z.string().min(1, "Projects delivered is required"),
+  townHallsHosted: z.string().min(1, "Town halls hosted is required"),
+  chairmanStaffsCount: z.string().min(1, "Staffs count is required"),
   chairmanBio: z.string().min(10, "Chairman biography is required"),
   chairmanMessage: z.string().min(10, "Chairman message is required"),
   // chairman_info.social_media - separate from the organisation's own links.
@@ -56,13 +43,13 @@ export const organizationSettingsFormSchema = z.object({
   chairmanFacebookUrl: optionalUrl("Facebook"),
   chairmanTwitterUrl: optionalUrl("Twitter"),
   chairmanInstagramUrl: optionalUrl("Instagram"),
-  // Vice chairman information - every field optional, see optionalNumeric.
+  // Vice chairman information - every field optional.
   viceChairmanName: z.string(),
   viceShortName: z.string(),
-  viceYearsInService: optionalNumeric("Years in service"),
-  viceProjectsDelivered: optionalNumeric("Projects delivered"),
-  viceTownHallsHosted: optionalNumeric("Town halls hosted"),
-  viceChairmanStaffsCount: optionalNumeric("Staffs count"),
+  viceYearsInService: z.string(),
+  viceProjectsDelivered: z.string(),
+  viceTownHallsHosted: z.string(),
+  viceChairmanStaffsCount: z.string(),
   viceChairmanBio: z.string(),
   viceChairmanMessage: z.string(),
   viceChairmanTiktokUrl: optionalUrl("TikTok"),

@@ -70,7 +70,8 @@ function toOfficialProfile(
     image: chairmanPortrait(info.images),
     biography: info.biography ?? "",
     message: info.message ?? "",
-    yearsInService: info.years_in_service ?? "",
+    yearsInService:
+      info.years_in_service == null ? "" : String(info.years_in_service),
     projectsDelivered: info.projects_delivered ?? "",
     townHallsHosted: info.town_halls_hosted ?? "",
   }
