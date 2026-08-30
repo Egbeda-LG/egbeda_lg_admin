@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import { RiNotification3Line, RiSearchLine } from "@remixicon/react"
 
 import { profileInitials, roleLabel } from "@/features/auth/auth.utils"
@@ -36,15 +37,16 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
             {/* Right Notifications & User Profile */}
             <div className="flex items-center gap-4">
-              <button
-                type="button"
-                onClick={() => (window.location.href = "/notifications")}
+              {/* A Link, not window.location: that reloaded the whole app -
+                  re-running auth and refetching every query - to move one page. */}
+              <Link
+                href="/notifications"
                 className="text-muted-foreground hover:bg-muted hover:text-foreground relative flex size-9 items-center justify-center rounded-full transition-colors"
               >
                 <RiNotification3Line className="size-5" />
                 <span className="ring-background absolute top-2 right-2 size-2 rounded-full bg-rose-600 ring-2" />
                 <span className="sr-only">Notifications</span>
-              </button>
+              </Link>
 
               <div className="flex items-center gap-2.5 border-l pl-2">
                 <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#701a2e] text-xs font-bold text-white">

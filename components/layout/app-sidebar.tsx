@@ -60,6 +60,66 @@ const navTeam = [
   { href: "/profile", label: "My Profile", icon: RiUser3Line },
 ]
 
+type NavItem = {
+  href: string
+  label: string
+  icon: typeof RiDashboardLine
+  badge?: string
+}
+
+/**
+ * One nav section. `render` makes the menu button *be* the link rather than
+ * wrapping one: an <a> nested in a <button> is invalid, and left the row's
+ * padding dead, so a click that missed the label did nothing.
+ */
+function NavGroup({
+  label,
+  items,
+  isActive,
+}: {
+  label: string
+  items: readonly NavItem[]
+  isActive: (href: string) => boolean
+}) {
+  return (
+    <SidebarGroup>
+      <SidebarGroupLabel className="px-3 font-serif text-[10px] font-bold tracking-widest text-rose-200/80 uppercase">
+        {label}
+      </SidebarGroupLabel>
+      <SidebarGroupContent>
+        <SidebarMenu>
+          {items.map((item) => {
+            const active = isActive(item.href)
+            const Icon = item.icon
+
+            return (
+              <SidebarMenuItem key={item.href}>
+                <SidebarMenuButton
+                  isActive={active}
+                  render={<Link href={item.href} />}
+                  className={`flex h-10 w-full items-center gap-3 rounded-lg px-3 transition-colors ${
+                    active
+                      ? "bg-[#d99b00] font-semibold text-[#2c060f] hover:bg-[#e5a900] hover:text-[#2c060f]"
+                      : "text-rose-100/90 hover:bg-white/10 hover:text-white"
+                  }`}
+                >
+                  <Icon className="size-4 shrink-0" />
+                  <span className="text-xs">{item.label}</span>
+                </SidebarMenuButton>
+                {item.badge && (
+                  <SidebarMenuBadge className="flex size-5 items-center justify-center rounded-full bg-amber-400 p-0 text-[10px] font-bold text-[#420b17]">
+                    {item.badge}
+                  </SidebarMenuBadge>
+                )}
+              </SidebarMenuItem>
+            )
+          })}
+        </SidebarMenu>
+      </SidebarGroupContent>
+    </SidebarGroup>
+  )
+}
+
 export function AppSidebar() {
   const pathname = usePathname()
   const { user, logout } = useAuth()
@@ -104,150 +164,14 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent className="gap-1 bg-[#5c1424] px-3">
-        {/* OVERVIEW */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="px-3 font-serif text-[10px] font-bold tracking-widest text-rose-200/80 uppercase">
-            Overview
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {navOverview.map((item) => {
-                const active = isActive(item.href)
-                const Icon = item.icon
-                return (
-                  <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton
-                      isActive={active}
-                      className={`h-10 rounded-lg px-3 transition-colors ${
-                        active
-                          ? "bg-[#d99b00] font-semibold text-[#2c060f] hover:bg-[#e5a900] hover:text-[#2c060f]"
-                          : "text-rose-100/90 hover:bg-white/10 hover:text-white"
-                      }`}
-                    >
-                      <Link
-                        href={item.href}
-                        className="flex w-full items-center gap-3"
-                      >
-                        <Icon className="size-4 shrink-0" />
-                        <span className="text-xs">{item.label}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                )
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        {/* CONTENT */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="px-3 font-serif text-[10px] font-bold tracking-widest text-rose-200/80 uppercase">
-            Content
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {navContent.map((item) => {
-                const active = isActive(item.href)
-                const Icon = item.icon
-                return (
-                  <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton
-                      isActive={active}
-                      className={`h-10 rounded-lg px-3 transition-colors ${
-                        active
-                          ? "bg-[#d99b00] font-semibold text-[#2c060f] hover:bg-[#e5a900] hover:text-[#2c060f]"
-                          : "text-rose-100/90 hover:bg-white/10 hover:text-white"
-                      }`}
-                    >
-                      <Link
-                        href={item.href}
-                        className="flex w-full items-center gap-3"
-                      >
-                        <Icon className="size-4 shrink-0" />
-                        <span className="text-xs">{item.label}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                )
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        {/* GOVERNANCE */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="px-3 font-serif text-[10px] font-bold tracking-widest text-rose-200/80 uppercase">
-            Governance
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {navGovernance.map((item) => {
-                const active = isActive(item.href)
-                const Icon = item.icon
-                return (
-                  <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton
-                      isActive={active}
-                      className={`h-10 rounded-lg px-3 transition-colors ${
-                        active
-                          ? "bg-[#d99b00] font-semibold text-[#2c060f] hover:bg-[#e5a900] hover:text-[#2c060f]"
-                          : "text-rose-100/90 hover:bg-white/10 hover:text-white"
-                      }`}
-                    >
-                      <Link
-                        href={item.href}
-                        className="flex w-full items-center gap-3"
-                      >
-                        <Icon className="size-4 shrink-0" />
-                        <span className="text-xs">{item.label}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                )
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        {/* TEAM & SETTINGS */}
-        <SidebarGroup>
-          <SidebarGroupLabel className="px-3 font-serif text-[10px] font-bold tracking-widest text-rose-200/80 uppercase">
-            Team & Settings
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {navTeam.map((item) => {
-                const active = isActive(item.href)
-                const Icon = item.icon
-                return (
-                  <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton
-                      isActive={active}
-                      className={`h-10 rounded-lg px-3 transition-colors ${
-                        active
-                          ? "bg-[#d99b00] font-semibold text-[#2c060f] hover:bg-[#e5a900] hover:text-[#2c060f]"
-                          : "text-rose-100/90 hover:bg-white/10 hover:text-white"
-                      }`}
-                    >
-                      <Link
-                        href={item.href}
-                        className="flex w-full items-center gap-3"
-                      >
-                        <Icon className="size-4 shrink-0" />
-                        <span className="text-xs">{item.label}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                    {item.badge && (
-                      <SidebarMenuBadge className="flex size-5 items-center justify-center rounded-full bg-amber-400 p-0 text-[10px] font-bold text-[#420b17]">
-                        {item.badge}
-                      </SidebarMenuBadge>
-                    )}
-                  </SidebarMenuItem>
-                )
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        <NavGroup label="Overview" items={navOverview} isActive={isActive} />
+        <NavGroup label="Content" items={navContent} isActive={isActive} />
+        <NavGroup
+          label="Governance"
+          items={navGovernance}
+          isActive={isActive}
+        />
+        <NavGroup label="Team & Settings" items={navTeam} isActive={isActive} />
       </SidebarContent>
 
       {/* Sidebar Footer: Logged-in Profile Card */}
