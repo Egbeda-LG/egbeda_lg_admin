@@ -97,6 +97,7 @@ export function SettingsPage() {
           is_in_homepage: image.isInHomepage,
           is_in_government: image.isInGovernment,
           is_in_about: image.isInAbout,
+          is_in_lower_home: image.isInLowerHome,
         }
       }),
     )

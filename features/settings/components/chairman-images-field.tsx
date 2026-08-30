@@ -19,20 +19,23 @@ export type ChairmanImageDraft = {
   isInHomepage: boolean
   isInGovernment: boolean
   isInAbout: boolean
+  isInLowerHome: boolean
 }
 
 export function toImageDrafts(images?: PlacementImage[]): ChairmanImageDraft[] {
   return (images ?? []).map((image, index) => ({
     key: `${image.photo_url}-${index}`,
     photoUrl: image.photo_url,
-    isInHomepage: image.is_in_homepage,
-    isInGovernment: image.is_in_government,
-    isInAbout: image.is_in_about,
+    isInHomepage: image.is_in_homepage ?? false,
+    isInGovernment: image.is_in_government ?? false,
+    isInAbout: image.is_in_about ?? false,
+    isInLowerHome: image.is_in_lower_home ?? false,
   }))
 }
 
 const PLACEMENTS = [
   { key: "isInHomepage", label: "Homepage" },
+  { key: "isInLowerHome", label: "Lower home" },
   { key: "isInGovernment", label: "Government" },
   { key: "isInAbout", label: "About" },
 ] as const
@@ -90,6 +93,7 @@ export function ChairmanImagesField({
         file,
         // A newly added photo is shown everywhere until told otherwise.
         isInHomepage: true,
+        isInLowerHome: true,
         isInGovernment: true,
         isInAbout: true,
       })

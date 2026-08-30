@@ -25,6 +25,7 @@ export function toNulgePayload(
             is_in_homepage: false,
             is_in_government: true,
             is_in_about: false,
+            is_in_lower_home: false,
           },
         ]
       : [],

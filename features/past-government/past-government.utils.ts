@@ -28,7 +28,8 @@ export function toPastGovernmentRow(
 export function toPastGovernmentRows(
   items: PastGovernmentItem[] = [],
 ): PastGovernmentRow[] {
-  return [...items]
+  return items
+    .filter((item) => typeof item.date === "string")
     .sort((a, b) => (b.sort_order ?? 0) - (a.sort_order ?? 0))
     .map(toPastGovernmentRow)
 }
