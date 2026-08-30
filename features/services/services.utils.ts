@@ -49,9 +49,10 @@ export function formatServicePrice(price?: string | number | null) {
 }
 
 /**
- * "2026-08-05 to 2026-09-07" -> "5 Aug - 7 Sep 2026", dropping the repeated
- * year when both ends share one. `timeline` is free text on the API, so
- * anything that is not a serialised range is shown as stored.
+ * `timeline` is free text on the API - a duration like "5 working days" - and
+ * is shown as stored. Records created while the form used a date-range picker
+ * hold "2026-08-05 to 2026-09-07"; those still read as "5 Aug - 7 Sep 2026",
+ * dropping the repeated year when both ends share one.
  */
 export function formatTimeline(value?: string | null) {
   const raw = value?.trim() ?? ""

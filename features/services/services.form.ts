@@ -1,7 +1,5 @@
 import * as z from "zod"
 
-import { isValidDateRange } from "@/components/ui/date-range-picker"
-
 /** At least one non-blank entry in a repeatable list. */
 const requiredList = (message: string) =>
   z
@@ -19,10 +17,9 @@ export const serviceFormSchema = z.object({
     .string()
     .min(1, "Amount is required")
     .regex(/^\d+(\.\d{1,2})?$/, "Enter a valid amount"),
-  timeline: z
-    .string()
-    .min(1, "Timeline is required")
-    .refine(isValidDateRange, "Select both a start and an end date"),
+  // Free text on the API - how long the service takes ("5 working days"),
+  // not a range of calendar dates.
+  timeline: z.string().min(2, "Timeline is required"),
   description: z.string().min(10, "Description is required"),
   // Edited as repeatable entries, so these travel as arrays end to end.
   eligibility: requiredList("Add at least one eligibility requirement"),

@@ -9,7 +9,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { DateRangePicker } from "@/components/ui/date-range-picker"
 import { CurrencyInput } from "@/components/ui/currency-input"
 import { StringListField } from "@/components/ui/string-list-field"
 import { Input } from "@/components/ui/input"
@@ -183,10 +182,10 @@ export function ServiceFormFields({ form }: ServiceFormFieldsProps) {
             <FormItem>
               <FormLabel className={FORM_LABEL_CLASS}>TIMELINE</FormLabel>
               <FormControl>
-                <DateRangePicker
-                  value={field.value}
-                  onChange={field.onChange}
-                  placeholder="Select timeline"
+                <Input
+                  placeholder="e.g. 5 working days"
+                  {...field}
+                  className={FORM_INPUT_CLASS}
                 />
               </FormControl>
               <FormMessage />
