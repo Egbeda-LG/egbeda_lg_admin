@@ -46,7 +46,7 @@ export function toDashboardStats(
   ]
 }
 
-export function greetingName(fullName?: string, fallback = "Segun") {
+export function greetingName(fullName?: string, fallback = "Administrator") {
   return fullName?.split(" ")[0] ?? fallback
 }
 

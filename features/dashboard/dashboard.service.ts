@@ -1,29 +1,41 @@
-import { landmarksRepository } from "@/features/landmarks/landmarks.repository"
-import { messagesRepository } from "@/features/messages/messages.repository"
-import { newsRepository } from "@/features/news/news.repository"
-import { projectsRepository } from "@/features/projects/projects.repository"
+import type {
+  ContactMessage,
+  LandmarkItem,
+  NewsItem,
+  NewsStats,
+  PaginatedResponse,
+  ProjectItem,
+  ProjectStats,
+} from "@/lib/api/types"
 
-export async function getDashboardOverview() {
-  const [news, projects, landmarks, messages] = await Promise.all([
-    newsRepository.getAll({ page: 1, limit: 10 }),
-    projectsRepository.getAll({ page: 1, limit: 10 }),
-    landmarksRepository.getAll({ page: 1, limit: 10 }),
-    messagesRepository.getAll({ page: 1, limit: 10 }),
-  ])
+type DashboardResponses = {
+  news?: PaginatedResponse<NewsItem, NewsStats>
+  projects?: PaginatedResponse<ProjectItem, ProjectStats>
+  landmarks?: PaginatedResponse<LandmarkItem>
+  messages?: PaginatedResponse<ContactMessage>
+}
 
-  const completedProjects = projects.data.filter(
-    (project) => project.status.toLowerCase() === "completed",
-  )
+export function buildDashboardOverview({
+  news,
+  projects,
+  landmarks,
+  messages,
+}: DashboardResponses) {
+  const completedProjects =
+    projects?.data.filter(
+      (project) => project.status.toLowerCase() === "completed",
+    ) ?? []
 
   return {
     stats: {
-      publishedNews: news.stats?.published ?? news.meta.total,
+      publishedNews: news?.stats?.published ?? news?.meta.total ?? 0,
       completedProjects:
-        news.stats?.completed_projects ?? completedProjects.length,
-      landmarks: news.stats?.landmarks_and_culture ?? landmarks.meta.total,
-      messages: messages.meta.total,
+        news?.stats?.completed_projects ?? completedProjects.length,
+      landmarks:
+        news?.stats?.landmarks_and_culture ?? landmarks?.meta.total ?? 0,
+      messages: messages?.meta.total ?? 0,
     },
-    projects: projects.data.slice(0, 4),
-    latestNews: news.data.slice(0, 5),
+    projects: projects?.data.slice(0, 4) ?? [],
+    latestNews: news?.data.slice(0, 5) ?? [],
   }
 }

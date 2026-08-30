@@ -8,7 +8,6 @@ import { AdminShell } from "@/components/layout/admin-shell"
 import { PageHeader } from "@/components/layout/page-header"
 import { Button } from "@/components/ui/button"
 import { StatCard } from "@/components/ui/stat-card"
-import { DashboardSkeleton } from "@/features/dashboard/components/dashboard-skeleton"
 import { LatestNewsCard } from "@/features/dashboard/components/latest-news-card"
 import { QuickActions } from "@/features/dashboard/components/quick-actions"
 import { RecentProjectsCard } from "@/features/dashboard/components/recent-projects-card"
@@ -29,6 +28,14 @@ export function DashboardPage() {
   const dashboardQuery = useDashboardOverview(isAuthenticated)
 
   const stats = toDashboardStats(dashboardQuery.data)
+  const statLoading = [
+    dashboardQuery.queries.news.isLoading,
+    dashboardQuery.queries.news.isLoading ||
+      dashboardQuery.queries.projects.isLoading,
+    dashboardQuery.queries.news.isLoading ||
+      dashboardQuery.queries.landmarks.isLoading,
+    dashboardQuery.queries.messages.isLoading,
+  ]
 
   React.useEffect(() => {
     if (!isLoading && !isAuthenticated) router.push("/login")
@@ -49,76 +56,72 @@ export function DashboardPage() {
 
   return (
     <AdminShell>
-      {dashboardQuery.isLoading ? (
-        <DashboardSkeleton />
-      ) : (
-        <div className="w-full space-y-8">
-          <PageHeader
-            title={`Welcome back, ${greetingName(user?.name)}`}
-            description="Here's what's happening across Egbeda LG today."
-            actions={
-              <>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className={SECONDARY_ACTION_CLASS}
-                  disabled
-                  title="Report export is not available yet"
-                >
-                  <RiDownloadLine className="text-muted-foreground mr-2 size-4" />
-                  Export report
-                </Button>
-                <Button
-                  size="sm"
-                  className={PRIMARY_ACTION_CLASS}
-                  onClick={() => router.push("/newsroom/compose")}
-                >
-                  <RiAddLine className="mr-1.5 size-4" />
-                  New article
-                </Button>
-              </>
-            }
-          />
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {stats.map((stat) => (
-              <StatCard
-                key={stat.label}
-                label={stat.label}
-                value={stat.value}
-                isLoading={dashboardQuery.isLoading}
-              />
-            ))}
-          </div>
-
-          <QuickActions />
-
-          {dashboardQuery.isError && (
-            <div className="border-destructive/20 bg-destructive/5 text-destructive flex items-center justify-between rounded-xl border px-4 py-3 text-xs">
-              <span>Dashboard data could not be loaded.</span>
+      <div className="w-full space-y-8">
+        <PageHeader
+          title={`Welcome back, ${greetingName(user?.name)}`}
+          description="Here's what's happening across Egbeda LG today."
+          actions={
+            <>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => dashboardQuery.refetch()}
+                className={SECONDARY_ACTION_CLASS}
+                disabled
+                title="Report export is not available yet"
               >
-                Try again
+                <RiDownloadLine className="text-muted-foreground mr-2 size-4" />
+                Export report
               </Button>
-            </div>
-          )}
+              <Button
+                size="sm"
+                className={PRIMARY_ACTION_CLASS}
+                onClick={() => router.push("/newsroom/compose")}
+              >
+                <RiAddLine className="mr-1.5 size-4" />
+                New article
+              </Button>
+            </>
+          }
+        />
 
-          <RecentProjectsCard
-            projects={dashboardQuery.data?.projects ?? []}
-            isLoading={dashboardQuery.isLoading}
-            onAddProject={() => router.push("/projects/new")}
-          />
-
-          <LatestNewsCard
-            articles={dashboardQuery.data?.latestNews ?? []}
-            isLoading={dashboardQuery.isLoading}
-            onNewArticle={() => router.push("/newsroom/compose")}
-          />
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {stats.map((stat, index) => (
+            <StatCard
+              key={stat.label}
+              label={stat.label}
+              value={stat.value}
+              isLoading={statLoading[index]}
+            />
+          ))}
         </div>
-      )}
+
+        <QuickActions />
+
+        {dashboardQuery.isError && (
+          <div className="border-destructive/20 bg-destructive/5 text-destructive flex items-center justify-between rounded-xl border px-4 py-3 text-xs">
+            <span>Dashboard data could not be loaded.</span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => dashboardQuery.refetch()}
+            >
+              Try again
+            </Button>
+          </div>
+        )}
+
+        <RecentProjectsCard
+          projects={dashboardQuery.data?.projects ?? []}
+          isLoading={dashboardQuery.queries.projects.isLoading}
+          onAddProject={() => router.push("/projects/new")}
+        />
+
+        <LatestNewsCard
+          articles={dashboardQuery.data?.latestNews ?? []}
+          isLoading={dashboardQuery.queries.news.isLoading}
+          onNewArticle={() => router.push("/newsroom/compose")}
+        />
+      </div>
     </AdminShell>
   )
 }
