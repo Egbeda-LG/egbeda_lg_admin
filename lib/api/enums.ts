@@ -90,6 +90,14 @@ export const MANAGEMENT_OFFICE_OPTIONS: SelectOption[] = [
     value: "director_of_education_and_social_services",
     label: "Director of Education & Social Services",
   },
+  {
+    value: "director_of_agriculture_and_natural_resources",
+    label: "Director of Agriculture and Natural Resources",
+  },
+  {
+    value: "director_budget_planning_research_and_statistics",
+    label: "Director Budget, Planning Research and Statistics",
+  },
   { value: "internal_auditor", label: "Internal Auditor" },
   { value: "information_officer", label: "Information Officer" },
 ]
@@ -100,7 +108,7 @@ export const NULGE_OFFICE_OPTIONS: SelectOption[] = [
   { value: "secretary", label: "Secretary" },
   { value: "treasurer", label: "Treasurer" },
   { value: "woman_chairperson", label: "Woman Chairperson" },
-  { value: "assistant_chairperson", label: "Assistant Chairperson" },
+  { value: "assistant_secretary", label: "Assistant Secretary" },
   { value: "trustee", label: "Trustee" },
   { value: "auditor", label: "Auditor" },
   {
