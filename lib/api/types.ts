@@ -172,6 +172,28 @@ export type DepartmentItem = {
 
 export type DepartmentPayload = Omit<DepartmentItem, "_id">
 
+/** Day the administration came in. The API stores the parts, not a date. */
+export type PastGovernmentDate = {
+  year: number
+  month: number
+  day: number
+}
+
+export type PastGovernmentItem = {
+  _id: string
+  name: string
+  date?: PastGovernmentDate
+  election_type: string
+  createdAt: string
+  updatedAt: string
+}
+
+export type PastGovernmentPayload = {
+  name: string
+  date: PastGovernmentDate
+  election_type: string
+}
+
 export type WardItem = {
   ward_id: string
   ward_number: string

@@ -12,6 +12,7 @@ import {
   RiGovernmentLine,
   RiGroupLine,
   RiHammerLine,
+  RiHistoryLine,
   RiLogoutBoxRLine,
   RiServiceLine,
   RiSettings3Line,
@@ -50,6 +51,7 @@ const navGovernance = [
   { href: "/executive", label: "Executive Officials", icon: RiGovernmentLine },
   { href: "/management", label: "Management", icon: RiGroupLine },
   { href: "/nulge", label: "NULGE", icon: RiUserSharedLine },
+  { href: "/past-government", label: "Past Government", icon: RiHistoryLine },
 ]
 
 const navTeam = [

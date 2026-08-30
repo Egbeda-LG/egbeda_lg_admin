@@ -29,6 +29,13 @@ export const SEAT_STATUS_OPTIONS: SelectOption[] = [
   { value: "vacant", label: "Vacant" },
 ]
 
+/** past government - verified from the API's own validation error */
+export const ELECTION_TYPE_OPTIONS: SelectOption[] = [
+  { value: "elected", label: "Elected" },
+  { value: "caretaker", label: "Caretaker" },
+  { value: "sole_administrator", label: "Sole Administrator" },
+]
+
 export const NEWS_CATEGORY_OPTIONS: SelectOption[] = [
   { value: "all_news", label: "All News" },
   { value: "infrastructure", label: "Infrastructure" },
@@ -145,5 +152,7 @@ export function withSelectedOption(options: SelectOption[], value?: string) {
  * `community_development` instead of their labels. Pass this to `items`.
  */
 export function selectItems(options: SelectOption[]): Record<string, string> {
-  return Object.fromEntries(options.map((option) => [option.value, option.label]))
+  return Object.fromEntries(
+    options.map((option) => [option.value, option.label]),
+  )
 }
