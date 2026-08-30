@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 
 import { Button } from "@/components/ui/button"
-import { DatePicker } from "@/components/ui/date-picker"
 import {
   Dialog,
   DialogContent,
@@ -121,10 +120,10 @@ export function PastGovernmentFormDialog({
                   <FormItem>
                     <FormLabel className={FORM_LABEL_CLASS}>DATE</FormLabel>
                     <FormControl>
-                      <DatePicker
-                        value={field.value}
-                        onChange={field.onChange}
-                        placeholder="Select date"
+                      <Input
+                        placeholder="e.g. 2006 - 2007"
+                        {...field}
+                        className={FORM_INPUT_CLASS}
                       />
                     </FormControl>
                     <FormMessage />
@@ -134,35 +133,62 @@ export function PastGovernmentFormDialog({
 
               <FormField
                 control={form.control}
-                name="electionType"
+                name="sortOrder"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className={FORM_LABEL_CLASS}>
-                      HOW THEY CAME IN
+                      SORT ORDER
                     </FormLabel>
-                    <Select
-                      items={selectItems(ELECTION_TYPE_OPTIONS)}
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger className={FORM_SELECT_CLASS}>
-                          <SelectValue placeholder="Select type" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {ELECTION_TYPE_OPTIONS.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min={0}
+                        placeholder="e.g. 2021"
+                        {...field}
+                        className={FORM_INPUT_CLASS}
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              <div className="sm:col-span-2">
+                <FormField
+                  control={form.control}
+                  name="electionType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className={FORM_LABEL_CLASS}>
+                        HOW THEY CAME IN
+                      </FormLabel>
+                      <Select
+                        items={selectItems(ELECTION_TYPE_OPTIONS)}
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className={FORM_SELECT_CLASS}>
+                            <SelectValue placeholder="Select type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {ELECTION_TYPE_OPTIONS.map((option) => (
+                            <SelectItem
+                              key={option.value}
+                              value={option.value}
+                            >
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
 
             <div className="flex justify-end gap-2 border-t pt-4">
