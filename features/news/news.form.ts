@@ -9,6 +9,7 @@ const categoryValues = NEWS_CATEGORY_OPTIONS.map((option) => option.value)
 export const newsFormSchema = z.object({
   title: z.string().min(2, "Article title is required"),
   content: z.string().min(10, "Article content is required"),
+  date: z.string().min(1, "Article date is required"),
   status: z
     .string()
     .refine((value) => statusValues.includes(value), "Select a valid status"),
@@ -26,6 +27,7 @@ export type NewsFormValues = z.infer<typeof newsFormSchema>
 export const newsFormDefaults: NewsFormValues = {
   title: "",
   content: "",
+  date: "",
   status: "draft",
   featured: "No",
   category: "community_development",
@@ -71,6 +73,7 @@ export function toNewsPayload(
   return {
     title: values.title,
     content: withFeaturedImage(values.content, featuredImageUrl),
+    date: values.date.trim(),
     status: values.status,
     is_featured: values.featured === "Yes",
     category: values.category,
@@ -81,6 +84,7 @@ export function fromNews(item: NewsItem): NewsFormValues {
   return {
     title: item.title,
     content: stripFeaturedImage(item.content ?? ""),
+    date: item.date ?? "",
     status: item.status,
     featured: item.is_featured ? "Yes" : "No",
     category: item.category,

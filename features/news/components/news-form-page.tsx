@@ -59,9 +59,9 @@ export function NewsFormPage({ mode }: NewsFormPageProps) {
     resolver: zodResolver(newsFormSchema),
     defaultValues: newsFormDefaults,
   })
-  const [title, content, status, featured, category] = useWatch({
+  const [title, content, date, status, featured, category] = useWatch({
     control: form.control,
-    name: ["title", "content", "status", "featured", "category"],
+    name: ["title", "content", "date", "status", "featured", "category"],
   })
 
   React.useEffect(() => {
@@ -193,6 +193,8 @@ export function NewsFormPage({ mode }: NewsFormPageProps) {
             onImageClear={() => setImageCleared(true)}
             status={status}
             onStatusChange={(value) => form.setValue("status", value)}
+            date={date}
+            onDateChange={(value) => form.setValue("date", value)}
             featured={featured}
             onFeaturedChange={(value) => form.setValue("featured", value)}
             category={category}

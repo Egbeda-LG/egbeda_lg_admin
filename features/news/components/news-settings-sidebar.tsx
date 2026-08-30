@@ -3,6 +3,7 @@
 import { RiCloseLine } from "@remixicon/react"
 
 import { ImageDropzone } from "@/components/ui/image-dropzone"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
@@ -24,6 +25,8 @@ type NewsSettingsSidebarProps = {
   onImageClear?: () => void
   status: string
   onStatusChange: (status: string) => void
+  date: string
+  onDateChange: (date: string) => void
   featured: "Yes" | "No"
   onFeaturedChange: (featured: "Yes" | "No") => void
   category: string
@@ -38,6 +41,8 @@ export function NewsSettingsSidebar({
   onImageClear,
   status,
   onStatusChange,
+  date,
+  onDateChange,
   featured,
   onFeaturedChange,
   category,
@@ -110,8 +115,14 @@ export function NewsSettingsSidebar({
           </div>
 
           <div className="flex items-center justify-between border-t py-1">
-            <span className="text-muted-foreground">Scheduled</span>
-            <span className="font-semibold text-rose-600">Now</span>
+            <span className="text-muted-foreground">Date</span>
+            <Input
+              value={date}
+              onChange={(event) => onDateChange(event.target.value)}
+              placeholder="e.g. 24 May 2025"
+              className="border-input h-11 w-40 text-xs shadow-none"
+              disabled={disabled}
+            />
           </div>
         </div>
       </div>

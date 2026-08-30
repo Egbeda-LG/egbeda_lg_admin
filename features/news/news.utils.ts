@@ -59,7 +59,7 @@ export function toNewsRow(item: NewsItem): NewsRow {
     isPublished: item.status?.toLowerCase() === "published",
     category: item.category,
     categoryLabel: optionLabel(NEWS_CATEGORY_OPTIONS, item.category),
-    date: item.createdAt?.slice(0, 10) ?? "—",
+    date: item.date?.trim() || item.createdAt?.slice(0, 10) || "—",
   }
 }
 

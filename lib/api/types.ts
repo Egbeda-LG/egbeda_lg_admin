@@ -88,6 +88,7 @@ export type NewsItem = {
   _id: string
   title: string
   content: string
+  date: string
   status: string
   is_featured: boolean
   category: string
