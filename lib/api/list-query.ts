@@ -10,7 +10,8 @@ export function listQuery(query: ListQuery): ListQuery {
 
   for (const [key, value] of Object.entries(query)) {
     if (value === undefined || value === null) continue
-    if (typeof value === "string" && (value.trim() === "" || value === "all")) continue
+    if (typeof value === "string" && (value.trim() === "" || value === "all"))
+      continue
 
     cleaned[key as keyof ListQuery] = value as never
   }
