@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { RiEyeLine, RiEyeOffLine, RiFingerprintLine } from "@remixicon/react"
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -18,7 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { ForgotPasswordDialog } from "@/features/auth/components/forgot-password-dialog"
+import { ChangePasswordDialog } from "@/features/auth/components/change-password-dialog"
 import { AuthLayout } from "@/features/auth/components/auth-layout"
 import { AuthLoadingScreen } from "@/features/auth/components/auth-loading-screen"
 import {
@@ -51,6 +51,9 @@ export function LoginPage() {
     resolver: zodResolver(loginFormSchema),
     defaultValues: loginFormDefaults,
   })
+  // Carries whatever has been typed into the dialog, so the account is already
+  // filled in when the flow is opened from here.
+  const typedEmail = useWatch({ control: form.control, name: "email" })
 
   React.useEffect(() => {
     if (isAuthenticated) router.push("/")
@@ -238,9 +241,10 @@ export function LoginPage() {
         </Form>
       </AuthLayout>
 
-      <ForgotPasswordDialog
+      <ChangePasswordDialog
         open={showForgotModal}
         onOpenChange={setShowForgotModal}
+        email={typedEmail}
       />
     </>
   )

@@ -54,6 +54,12 @@ export const profileFormDefaults: ProfileFormValues = {
 
 export const changePasswordFormSchema = z
   .object({
+    // Part of the form, not a prop: the flow also runs from the sign-in page,
+    // where nobody is authenticated and the account has to be named.
+    email: z
+      .string()
+      .min(1, "Email address is required")
+      .email("Enter a valid email address"),
     otp: z.string().min(4, "OTP is required"),
     currentPassword: z.string().min(1, "Current password is required"),
     newPassword: z
@@ -69,6 +75,7 @@ export const changePasswordFormSchema = z
 export type ChangePasswordFormValues = z.infer<typeof changePasswordFormSchema>
 
 export const changePasswordFormDefaults: ChangePasswordFormValues = {
+  email: "",
   otp: "",
   currentPassword: "",
   newPassword: "",

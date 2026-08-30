@@ -21,10 +21,9 @@ export function fromAdminProfile(profile: AdminProfile): ProfileFormValues {
 
 export function toChangePasswordPayload(
   values: ChangePasswordFormValues,
-  email: string,
 ): ConfirmChangePasswordPayload {
   return {
-    email,
+    email: values.email.trim(),
     otp: values.otp,
     current_password: values.currentPassword,
     new_password: values.newPassword,

@@ -3,7 +3,7 @@
 import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { RiKey2Line, RiSaveLine } from "@remixicon/react"
-import { useForm, useWatch } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 
 import { AdminShell } from "@/components/layout/admin-shell"
@@ -60,7 +60,6 @@ export function ProfilePage() {
     resolver: zodResolver(profileFormSchema),
     defaultValues: profileFormDefaults,
   })
-  const workEmail = useWatch({ control: form.control, name: "workEmail" })
 
   React.useEffect(() => {
     if (profile.data) form.reset(fromAdminProfile(profile.data))
@@ -171,7 +170,10 @@ export function ProfilePage() {
         <ChangePasswordDialog
           open={isPasswordDialogOpen}
           onOpenChange={setIsPasswordDialogOpen}
-          email={workEmail}
+          // The account address, not the editable work email - the OTP goes to
+          // the account, and an unrecognised address is rejected.
+          email={admin?.email ?? ""}
+          lockEmail
         />
       </div>
     </AdminShell>
