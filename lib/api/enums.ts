@@ -87,6 +87,10 @@ export const MANAGEMENT_OFFICE_OPTIONS: SelectOption[] = [
     label: "Director of Primary Healthcare",
   },
   {
+    value: "director_of_environmental_and_health_services",
+    label: "Director of Environmental and Health Services",
+  },
+  {
     value: "director_of_education_and_social_services",
     label: "Director of Education & Social Services",
   },
