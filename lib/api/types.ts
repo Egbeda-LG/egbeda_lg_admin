@@ -300,6 +300,8 @@ export type OrganizationDetails = {
   landmass_per_sq_km: number
   population: number
   no_of_wards: number
+  no_of_pry_schools?: number
+  no_of_sec_schools?: number
   no_of_schools: number
   no_of_health_centres: number
   no_of_staffs: number
