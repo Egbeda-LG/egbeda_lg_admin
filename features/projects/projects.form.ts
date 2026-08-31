@@ -12,6 +12,7 @@ export const projectFormSchema = z
     contractor: z.string().min(2, "Contractor is required"),
     description: z.string().min(10, "Description is required"),
     status: z.string().min(1, "Status is required"),
+    featured: z.enum(["Yes", "No"]),
   })
   .refine((values) => values.endDate >= values.startDate, {
     message: "End date cannot be before the start date",
@@ -29,4 +30,5 @@ export const projectFormDefaults: ProjectFormValues = {
   contractor: "",
   description: "",
   status: "draft",
+  featured: "No",
 }

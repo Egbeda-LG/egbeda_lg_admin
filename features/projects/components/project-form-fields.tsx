@@ -118,6 +118,33 @@ export function ProjectFormFields({
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="featured"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className={FORM_LABEL_CLASS}>FEATURED</FormLabel>
+                <Select
+                  items={{ Yes: "Yes", No: "No" }}
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger className={FORM_SELECT_CLASS}>
+                      <SelectValue placeholder="Featured" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="Yes">Yes</SelectItem>
+                    <SelectItem value="No">No</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
         <div className="grid gap-6 sm:grid-cols-3">

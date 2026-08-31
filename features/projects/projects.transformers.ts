@@ -19,7 +19,7 @@ export function toProjectPayload(
     description: values.description ?? "",
     photo_url: photoUrl,
     status: values.status,
-    is_featured: false,
+    is_featured: values.featured === "Yes",
   }
 }
 
@@ -34,5 +34,6 @@ export function fromProject(item: ProjectItem): ProjectFormValues {
     contractor: item.contractor,
     description: item.description,
     status: item.status,
+    featured: item.is_featured ? "Yes" : "No",
   }
 }
