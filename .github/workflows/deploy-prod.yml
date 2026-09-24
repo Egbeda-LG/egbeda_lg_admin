@@ -1,0 +1,75 @@
+name: Deploy Admin Console
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-admin-console
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      NEXT_PUBLIC_API_BASE_URL: https://api.egbedalga.oy.gov.ng
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.17.0
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build standalone release
+        run: |
+          pnpm build
+          cp -R public .next/standalone/
+          mkdir -p .next/standalone/.next
+          cp -R .next/static .next/standalone/.next/static
+          mkdir -p release/.next
+          cp -R .next/standalone release/.next/standalone
+          cp ecosystem.config.cjs release/
+          cp -R deploy release/deploy
+          tar -czf egbeda-lg-admin.tar.gz -C release .
+
+      - name: Upload release to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.PROD_EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: ${{ secrets.EC2_PORT || 22 }}
+          source: egbeda-lg-admin.tar.gz
+          target: /tmp
+
+      - name: Start release on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.PROD_EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: ${{ secrets.EC2_PORT || 22 }}
+          script: |
+            set -euo pipefail
+            APP_DIR="${{ secrets.ADMIN_APP_DIR }}"
+            APP_DIR="${APP_DIR:-/var/www/egbeda_lg_admin}"
+            mkdir -p "$APP_DIR"
+            rm -rf "$APP_DIR/.next" "$APP_DIR/deploy" "$APP_DIR/ecosystem.config.cjs"
+            tar -xzf /tmp/egbeda-lg-admin.tar.gz -C "$APP_DIR"
+            chmod +x "$APP_DIR/deploy/deploy.sh"
+            APP_DIR="$APP_DIR" APP_NAME="egbeda-lg-admin" "$APP_DIR/deploy/deploy.sh"
